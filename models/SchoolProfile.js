@@ -4,7 +4,7 @@ const schoolProfileSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    default: 'Ahmsal Heritage Academy'
+    default: 'Abubakr International School'
   },
   address: {
     type: String,

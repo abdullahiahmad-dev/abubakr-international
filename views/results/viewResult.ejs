@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>View Student Result - Asmau Ahmad Makarfi</title>
+  <title>View Student Result - Abubakr International Model</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -255,7 +255,7 @@
               <span class="rainbow-text">View Student Result</span>
             </h1>
           </div>
-          <p class="text-blue-100">Asmau Ahmad Makarfi Student Result Management</p>
+          <p class="text-blue-100">Abubakr International Model Student Result Management</p>
         </div>
 
         <div class="flex-1 overflow-y-auto p-6">
@@ -541,7 +541,7 @@ class="h-52 rounded-lg shadow-md">
         <%= schoolProfile ? schoolProfile.name : '' %>
       </h1>
       <p class="text-lg md:text-xl mt-1 font-medium text-gray-700">
-<%= schoolProfile ? schoolProfile.address : 'No. 8 School Road, Abakwa Kaduna, Nigeria' %>
+<%= schoolProfile ? schoolProfile.address : '' %>
       </p>
       <p class="text-lg md:text-xl mt-1 font-medium text-gray-700">
 Tel: <% if (schoolProfile && schoolProfile.phoneNumbers && schoolProfile.phoneNumbers.length > 0) { %>
@@ -549,11 +549,11 @@ Tel: <% if (schoolProfile && schoolProfile.phoneNumbers && schoolProfile.phoneNu
 <%= phone %><% if (index < schoolProfile.phoneNumbers.length - 1) { %>, <% } %>
 <% }) %>
 <% } else { %>
-+234 8067816564, +234 7062818133
++234 
 <% } %>
       </p>
       <p class="text-lg md:text-xl mt-1 italic font-semibold text-blue-700">
-Motto: <%= schoolProfile ? schoolProfile.motto : 'Striving for Excellence' %>
+Motto: <%= schoolProfile ? schoolProfile.motto : '' %>
       </p>
     </div>
   </div>
@@ -697,7 +697,7 @@ Motto: <%= schoolProfile ? schoolProfile.motto : 'Striving for Excellence' %>
 
           <div class="bg-gray-100 p-4 border-t border-gray-200 text-center text-sm no-print">
             <p class="text-gray-600">
-              <i class="fas fa-chalkboard-teacher mr-1"></i> Asmau Ahmad Makarfi Student Management System
+              <i class="fas fa-chalkboard-teacher mr-1"></i> Abubakr International Model Student Management System
             </p>
           </div>
         </div>
