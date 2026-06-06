@@ -12,11 +12,11 @@ exports.postLogin = async (req, res) => {
 
   try {
     // 1. Check if default admin login
-    if (email === "ahmsal" && password === "admin") {
+    if (email === "admin" && password === "admin") {
       req.session.user = { 
         role: "admin", 
         fullName: "Administrator",
-        email: "ahmsal",
+        email: "admin",
         isDefaultAdmin: true // Flag to identify the default admin
       };
       return res.redirect("/dashboard");
