@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> | Striving for Excellence</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Montserrat+Alternates:wght@700&display=swap');
+        :root {
+            --primary: #1E40AF;
+            --secondary: #1E3A8A;
+            --accent: #3B82F6;
+            --dark: #1E3A8A;
+            --light: #F5F5F5;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+        }
+        .title-font {
+            font-family: 'Montserrat Alternates', sans-serif;
+        }
+        .hero-pattern {
+            background-image: radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .btn-primary {
+            background-color: var(--primary);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(30, 64, 175, 0.3);
+        }
+        .nav-link:hover {
+            color: var(--primary) !important;
+        }
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .teacher-card {
+            overflow: hidden;
+        }
+        .teacher-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 0 auto;
+            display: block;
+        }
+        @media (min-width: 768px) {
+            .teacher-img {
+                width: 160px;
+                height: 160px;
+            }
+        }
+        .teacher-card:hover .teacher-img {
+            transform: scale(1.05);
+        }
+        /* Custom responsive adjustments */
+        @media (max-width: 640px) {
+            .hero-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .hero-buttons a {
+                width: 100%;
+                text-align: center;
+            }
+            .event-card, .teacher-card {
+                margin-bottom: 1.5rem;
+            }
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .mission-vision-grid {
+                grid-template-columns: 1fr;
+            }
+            .mobile-text-center {
+                text-align: center;
+            }
+        }
+        @media (max-width: 375px) {
+            .logo-text {
+                font-size: 1rem;
+            }
+            .hero-title {
+                font-size: 2rem;
+                line-height: 2.5rem;
+            }
+            .section-title {
+                font-size: 1.75rem;
+            }
+            .teacher-img {
+                width: 100px;
+                height: 100px;
+            }
+            .contact-form input, 
+            .contact-form textarea {
+                padding: 0.75rem;
+            }
+            .mobile-stack {
+                flex-direction: column;
+            }
+            .mobile-full-width {
+                width: 100%;
+            }
+        }
+        /* New styles for mission and vision */
+        .mission-card, .vision-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        .mission-card:hover {
+            border-left-color: #3B82F6;
+            transform: translateX(5px);
+        }
+        .vision-card:hover {
+            border-left-color: #1E40AF;
+            transform: translateX(5px);
+        }
+        /* Improved mobile navigation */
+        .mobile-nav-active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Enhanced image styling */
+        .gallery-img {
+            transition: transform 0.5s ease;
+            cursor: pointer;
+        }
+        .gallery-img:hover {
+            transform: scale(1.05);
+        }
+        /* Improved spacing for mobile */
+        .mobile-section-padding {
+            padding: 2rem 1rem;
+        }
+        @media (min-width: 768px) {
+            .mobile-section-padding {
+                padding: 4rem 2rem;
+            }
+        }
+        
+        /* Gallery Carousel Styles */
+        .gallery-carousel {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.5rem;
+        }
+        
+        .gallery-container {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        
+        .gallery-slide {
+            min-width: 100%;
+            position: relative;
+        }
+        
+        .gallery-slide img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+        
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 18px;
+            z-index: 10;
+            transition: background-color 0.3s;
+        }
+        
+        .gallery-nav:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        .gallery-prev {
+            left: 10px;
+        }
+        
+        .gallery-next {
+            right: 10px;
+        }
+        
+        .gallery-indicators {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .gallery-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .gallery-indicator.active {
+            background-color: var(--primary);
+        }
+        
+        /* Lightbox Styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+        }
+        
+        .lightbox-img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 5px;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            padding: 20px;
+            user-select: none;
+        }
+        
+        .lightbox-prev {
+            left: 20px;
+        }
+        
+        .lightbox-next {
+            right: 20px;
+        }
+        
+        /* Thumbnail Gallery Styles */
+        .thumbnail-gallery {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 0;
+            gap: 10px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+        
+        .thumbnail-gallery::-webkit-scrollbar {
+            height: 6px;
+        }
+        
+        .thumbnail-gallery::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .thumbnail-gallery::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        
+        .thumbnail-gallery::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        .thumbnail {
+            flex: 0 0 auto;
+            width: 120px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        
+        .thumbnail:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        
+        .thumbnail.active {
+            opacity: 1;
+            border: 2px solid var(--primary);
+        }
+        
+        /* Touch swipe indicator */
+        .swipe-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 5;
+            opacity: 0;
+            animation: fadeInOut 3s ease-in-out;
+        }
+        
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="bg-blue-600 p-2 rounded-full">
+                        <i data-feather="book-open" class="text-white"></i>
+                    </div>
+                    <a href="#" class="title-font text-lg md:text-2xl font-bold text-gray-800 logo-text">AHMSAL <span class="text-blue-700">Heritage</span> Academy</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-4 lg:space-x-8">
+                    <a href="#" class="nav-link text-gray-700 hover:text-blue-600 font-medium text-sm lg:text-base">Home</a>
+                    <a href="#about" class="nav-link text-gray-700 hover:text-blue-600 font-medium text-sm lg:text-base">About</a>
+                    <a href="#mission" class="nav-link text-gray-700 hover:text-blue-600 font-medium text-sm lg:text-base">Mission & Vision</a>
+                    <a href="#events" class="nav-link text-gray-700 hover:text-blue-600 font-medium text-sm lg:text-base">Events</a>
+                    <a href="#gallery" class="nav-link text-gray-700 hover:text-blue-600 font-medium text-sm lg:text-base">Gallery</a>
+                    <a href="#team" class="nav-link text-gray-700 hover:text-blue-600 font-medium text-sm lg:text-base">Our Team</a>
+                    <a href="/check-result" class="bg-blue-600 text-white px-3 py-1.5 lg:px-4 lg:py-2 rounded-lg font-medium hover:bg-blue-700 transition text-sm lg:text-base">Check Results</a>
+                    <a href="/login" class="bg-blue-600 text-white px-3 py-1.5 lg:px-4 lg:py-2 rounded-lg font-medium hover:bg-blue-700 transition text-sm lg:text-base">Login</a>
+                </div>
+                <button class="md:hidden focus:outline-none" id="menu-btn">
+                    <i data-feather="menu" class="text-gray-700"></i>
+                </button>
+            </div>
+            <!-- Mobile Menu -->
+            <div class="md:hidden hidden py-4" id="mobile-menu">
+                <a href="#" class="block py-2 text-gray-700 hover:text-blue-600">Home</a>
+                <a href="#about" class="block py-2 text-gray-700 hover:text-blue-600">About</a>
+                <a href="#mission" class="block py-2 text-gray-700 hover:text-blue-600">Mission & Vision</a>
+                <a href="#events" class="block py-2 text-gray-700 hover:text-blue-600">Events</a>
+                <a href="#gallery" class="block py-2 text-gray-700 hover:text-blue-600">Gallery</a>
+                <a href="#team" class="block py-2 text-gray-700 hover:text-blue-600">Our Team</a>
+                <a href="/check-result" class="block mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg font-medium text-center">Check Results</a>
+                <a href="/login" class="block mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg font-medium text-center">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-pattern bg-gradient-to-r from-blue-50 to-indigo-50 py-12 md:py-24 mobile-section-padding">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0" data-aos="fade-right">
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-6 title-font hero-title mobile-text-center">
+                        <span class="text-blue-600">Striving</span> for Excellence
+                    </h1>
+                    <p class="text-base sm:text-lg text-gray-600 mb-8 mobile-text-center">
+                          provides quality education in a nurturing environment that fosters academic excellence and moral values.
+                    </p>
+                    <div class="flex space-x-4 hero-buttons mobile-stack">
+                        <a href="#contact" class="btn-primary text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-medium text-sm sm:text-base mobile-full-width">Contact Us</a>
+                        <a href="#about" class="border-2 border-blue-600 text-blue-600 px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-medium hover:bg-blue-50 transition text-sm sm:text-base mobile-full-width">Learn More</a>
+                    </div>
+                </div>
+                <div class="md:w-1/2" data-aos="fade-left">
+                    <div class="relative">
+                        <img src="/css/logo.png" alt="Happy students at  " class="rounded-lg shadow-xl w-full">
+                        <div class="absolute -bottom-3 -right-3 sm:-bottom-5 sm:-right-5 bg-blue-600 p-3 sm:p-4 rounded-lg shadow-lg">
+                            <i data-feather="award" class="text-white w-6 h-6 sm:w-8 sm:h-8"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-12 md:py-16 bg-white mobile-section-padding">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12 md:mb-16" data-aos="fade-up">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 title-font section-title">About Our School</h2>
+                <div class="w-16 sm:w-20 h-1 bg-blue-600 mx-auto mb-6"></div>
+                <p class="text-gray-600 max-w-3xl mx-auto text-sm sm:text-base">
+                      is a premier educational institution in Kaduna, Nigeria, dedicated to nurturing young minds through a balanced curriculum that combines academic rigor with moral and cultural values.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <div class="bg-blue-50 p-4 sm:p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="100">
+                    <div class="bg-blue-100 w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-4">
+                        <i data-feather="book" class="text-blue-600 w-5 h-5 sm:w-6 sm:h-6"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-3">Quality Education</h3>
+                    <p class="text-gray-600 text-sm sm:text-base">
+                        We offer a comprehensive curriculum that meets international standards while incorporating our rich cultural heritage.
+                    </p>
+                </div>
+                <div class="bg-indigo-50 p-4 sm:p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="200">
+                    <div class="bg-indigo-100 w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-4">
+                        <i data-feather="users" class="text-indigo-600 w-5 h-5 sm:w-6 sm:h-6"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-3">Experienced Teachers</h3>
+                    <p class="text-gray-600 text-sm sm:text-base">
+                        Our dedicated team of educators are passionate about shaping young minds and preparing them for future challenges.
+                    </p>
+                </div>
+                <div class="bg-blue-50 p-4 sm:p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="300">
+                    <div class="bg-blue-100 w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-4">
+                        <i data-feather="activity" class="text-blue-600 w-5 h-5 sm:w-6 sm:h-6"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-3">Holistic Development</h3>
+                    <p class="text-gray-600 text-sm sm:text-base">
+                        We focus on the complete development of each child - academically, socially, emotionally, and physically.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission & Vision Section -->
+    <section id="mission" class="py-12 md:py-16 bg-gray-50 mobile-section-padding">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12 md:mb-16" data-aos="fade-up">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 title-font section-title">Our Mission & Vision</h2>
+                <div class="w-16 sm:w-20 h-1 bg-blue-600 mx-auto mb-6"></div>
+                <p class="text-gray-600 max-w-3xl mx-auto text-sm sm:text-base">
+                    Guiding principles that shape our educational approach and define our aspirations for every student.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 mission-vision-grid">
+                <div class="bg-white p-6 md:p-8 rounded-lg shadow-md mission-card" data-aos="fade-right">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-blue-100 p-3 rounded-full mr-4">
+                            <i data-feather="target" class="text-blue-600 w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl md:text-2xl font-bold text-gray-800">Our Mission</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4 text-sm md:text-base">
+                       To educate and instill discipline on learners, which will enable them reach and expand their potential responsibly and productively.</p>
+    
+                </div>
+                <div class="bg-white p-6 md:p-8 rounded-lg shadow-md vision-card" data-aos="fade-left">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-indigo-100 p-3 rounded-full mr-4">
+                            <i data-feather="eye" class="text-indigo-600 w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl md:text-2xl font-bold text-gray-800">Our Vision</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4 text-sm md:text-base">
+                      To shape the future of all learners and our community through critical thinking.
+                    </p>
+ 
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <section id="events" class="py-12 md:py-16 bg-white mobile-section-padding">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12 md:mb-16" data-aos="fade-up">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 title-font section-title">Upcoming Events</h2>
+                <div class="w-16 sm:w-20 h-1 bg-blue-600 mx-auto mb-6"></div>
+                <p class="text-gray-600 max-w-3xl mx-auto text-sm sm:text-base">
+                    Join us for these exciting upcoming events at  
+                </p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden event-card transition duration-300" data-aos="fade-up" data-aos-delay="100">
+                    <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Cultural Day" class="w-full h-40 sm:h-48 object-cover">
+                    <div class="p-4 sm:p-6">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-blue-100 text-blue-600 px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-medium">June 15</div>
+                            <div class="ml-3 sm:ml-4 text-gray-500 text-xs sm:text-sm">10:00 AM - 3:00 PM</div>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2">Annual Cultural Day</h3>
+                        <p class="text-gray-600 mb-4 text-sm sm:text-base">
+                            Celebrate Nigeria's rich cultural diversity with performances, food, and traditional attire from various ethnic groups.
+                        </p>
+                        <a href="#" class="text-blue-600 font-medium flex items-center text-sm sm:text-base">
+                            Learn More <i data-feather="arrow-right" class="ml-2 w-3 h-3 sm:w-4 sm:h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md overflow-hidden event-card transition duration-300" data-aos="fade-up" data-aos-delay="200">
+                    <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Graduation" class="w-full h-40 sm:h-48 object-cover">
+                    <div class="p-4 sm:p-6">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-indigo-100 text-indigo-600 px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-medium">July 20</div>
+                            <div class="ml-3 sm:ml-4 text-gray-500 text-xs sm:text-sm">9:00 AM - 12:00 PM</div>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2">Graduation Ceremony</h3>
+                        <p class="text-gray-600 mb-4 text-sm sm:text-base">
+                            Join us as we celebrate the achievements of our graduating class and wish them success in their future endeavors.
+                        </p>
+                        <a href="#" class="text-blue-600 font-medium flex items-center text-sm sm:text-base">
+                            Learn More <i data-feather="arrow-right" class="ml-2 w-3 h-3 sm:w-4 sm:h-4"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md overflow-hidden event-card transition duration-300" data-aos="fade-up" data-aos-delay="300">
+                    <img src="https://images.unsplash.com/photo-1541336032412-2048a678540d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Sports Day" class="w-full h-40 sm:h-48 object-cover">
+                    <div class="p-4 sm:p-6">
+                        <div class="flex items-center mb-3">
+                            <div class="bg-blue-100 text-blue-600 px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-medium">May 25</div>
+                            <div class="ml-3 sm:ml-4 text-gray-500 text-xs sm:text-sm">8:00 AM - 4:00 PM</div>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2">Inter-House Sports</h3>
+                        <p class="text-gray-600 mb-4 text-sm sm:text-base">
+                            Cheer for your favorite house as students compete in various athletic events showcasing their talents and sportsmanship.
+                        </p>
+                        <a href="#" class="text-blue-600 font-medium flex items-center text-sm sm:text-base">
+                            Learn More <i data-feather="arrow-right" class="ml-2 w-3 h-3 sm:w-4 sm:h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+<!-- Gallery Section -->
+<section id="gallery" class="py-12 md:py-16 bg-gray-50 mobile-section-padding">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12 md:mb-16" data-aos="fade-up">
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 title-font section-title">Our Gallery</h2>
+            <div class="w-16 sm:w-20 h-1 bg-blue-600 mx-auto mb-6"></div>
+            <p class="text-gray-600 max-w-3xl mx-auto text-sm sm:text-base">
+                Glimpses of life at AHMSAL Heritage Academy - where learning meets fun and creativity
+            </p>
+        </div>
+        
+        <!-- Main Gallery Carousel -->
+        <div class="gallery-carousel mb-6" data-aos="fade-up">
+            <div class="gallery-container">
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-1010991452.jpg" alt="School Activity" class="gallery-img">
+                    <div class="swipe-hint">Swipe or click arrows to navigate</div>
+                </div>
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-1057755905.jpg" alt="School Activity" class="gallery-img">
+                </div>
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-1104237019.jpg" alt="School Activity" class="gallery-img">
+                </div>
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-1146674340.jpg" alt="School Activity" class="gallery-img">
+                </div>
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-1169197960.jpg" alt="School Activity" class="gallery-img">
+                </div>
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-1292926980.jpg" alt="School Activity" class="gallery-img">
+                </div>
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-1297246445.jpg" alt="School Activity" class="gallery-img">
+                </div>
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-1305596658.jpg" alt="School Activity" class="gallery-img">
+                </div>
+
+
+
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-1528459114.jpg" alt="School Activity" class="gallery-img">
+                </div>
+
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-1656006818.jpg" alt="School Activity" class="gallery-img">
+                </div>
+
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-1762198670.jpg" alt="School Activity" class="gallery-img">
+                </div>
+
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-1936954284.jpg" alt="School Activity" class="gallery-img">
+                </div>
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-2029933606.jpg" alt="School Activity" class="gallery-img">
+                </div>
+
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-301145923.jpg" alt="School Activity" class="gallery-img">
+                </div>
+
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-326750847.jpg" alt="School Activity" class="gallery-img">
+                </div>
+
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-406283697.jpg" alt="School Activity" class="gallery-img">
+                </div>
+
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-431271659.jpg" alt="School Activity" class="gallery-img">
+                </div>
+
+                <div class="gallery-slide">
+                    <img src="/css/Snapchat-443891262.jpg" alt="School Activity" class="gallery-img">
+                </div>
+            </div>
+            
+            <button class="gallery-nav gallery-prev" id="gallery-prev">
+                <i data-feather="chevron-left"></i>
+            </button>
+            <button class="gallery-nav gallery-next" id="gallery-next">
+                <i data-feather="chevron-right"></i>
+            </button>
+        </div>
+        
+        <!-- Gallery Indicators -->
+        <div class="gallery-indicators" id="gallery-indicators"></div>
+        
+        <!-- Thumbnail Gallery -->
+        <div class="thumbnail-gallery mt-6" id="thumbnail-gallery">
+            <img src="/css/Snapchat-2092834085.jpg" alt="School Activity" class="thumbnail active" data-index="0">
+            <img src="/css/Snapchat-2092834086.jpg" alt="School Activity" class="thumbnail" data-index="1">
+            <img src="/css/Snapchat-2092834087.jpg" alt="School Activity" class="thumbnail" data-index="2">
+            <img src="/css/Snapchat-2092834088.jpg" alt="School Activity" class="thumbnail" data-index="3">
+            <img src="/css/Snapchat-2092834089.jpg" alt="School Activity" class="thumbnail" data-index="4">
+            <img src="/css/Snapchat-2092834090.jpg" alt="School Activity" class="thumbnail" data-index="5">
+            <img src="/css/Snapchat-2092834091.jpg" alt="School Activity" class="thumbnail" data-index="6">
+            <img src="/css/Snapchat-2092834092.jpg" alt="School Activity" class="thumbnail" data-index="7">
+        </div>
+    </div>
+</section>
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close" id="lightbox-close">&times;</span>
+        <div class="lightbox-content">
+            <img src="" alt="Gallery Image" class="lightbox-img" id="lightbox-img">
+            <div class="lightbox-nav lightbox-prev" id="lightbox-prev">&#10094;</div>
+            <div class="lightbox-nav lightbox-next" id="lightbox-next">&#10095;</div>
+        </div>
+    </div>
+
+    <!-- Team Section -->
+    <section id="team" class="py-12 md:py-16 bg-white mobile-section-padding">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12 md:mb-16" data-aos="fade-up">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 title-font section-title">Meet Our Team</h2>
+                <div class="w-16 sm:w-20 h-1 bg-blue-600 mx-auto mb-6"></div>
+                <p class="text-gray-600 max-w-3xl mx-auto text-sm sm:text-base">
+                    Our dedicated team of educators and staff who make   a nurturing environment for learning
+                </p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden teacher-card text-center p-4 sm:p-6" data-aos="fade-up" data-aos-delay="100">
+                    <img src="https://z-cdn-media.chatglm.cn/files/43b5541f-a9ce-405c-ac7f-2ef75a0ae570.jpg?auth_key=1865607534-4335a24983034f68bd9d2126d190a57e-0-ae4a0b0c0e07243bf07ecf9092dbc967" alt="Principal" class="teacher-img mb-4 transition duration-500">
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-1">Mallam Yakubu Abubakar</h3>
+                    <p class="text-blue-600 font-medium mb-3 text-sm sm:text-base">Principal</p>
+                    <p class="text-gray-600 text-xs sm:text-sm">
+                        With over 10 years of experience in education, Mal Abubakar leads our school with vision and dedication.
+                    </p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md overflow-hidden teacher-card text-center p-4 sm:p-6" data-aos="fade-up" data-aos-delay="200">
+                    <img src="https://z-cdn-media.chatglm.cn/files/56224e1b-35b4-46ff-a56a-5801ebe9b221.jpg?auth_key=1865607901-e1f4e88ef5bc49938ddada67dcfc306c-0-ef4a19cf3e2200fa56dcdf8ca4efdf5c" alt="Vice Principal" class="teacher-img mb-4 transition duration-500">
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-1">Aisha Abubakar</h3>
+                    <p class="text-blue-600 font-medium mb-3 text-sm sm:text-base">Head Teacher (Secondary)</p>
+                    <p class="text-gray-600 text-xs sm:text-sm">
+                        A home economics specialist who ensures the smooth running of academic activities.
+                    </p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md overflow-hidden teacher-card text-center p-4 sm:p-6" data-aos="fade-up" data-aos-delay="300">
+                    <img src="https://z-cdn-media.chatglm.cn/files/56224e1b-35b4-46ff-a56a-5801ebe9b221.jpg?auth_key=1865607901-e1f4e88ef5bc49938ddada67dcfc306c-0-ef4a19cf3e2200fa56dcdf8ca4efdf5c" alt="Head Teacher" class="teacher-img mb-4 transition duration-500">
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-1">Rahama Yakubu </h3>
+                    <p class="text-blue-600 font-medium mb-3 text-sm sm:text-base">Head Teacher (Primary) </p>
+                    <p class="text-gray-600 text-xs sm:text-sm">
+                        Passionate about early childhood education and creating a joyful learning environment.
+                    </p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md overflow-hidden teacher-card text-center p-4 sm:p-6" data-aos="fade-up" data-aos-delay="400">
+                    <img src="https://z-cdn-media.chatglm.cn/files/a8d8afbe-3b24-4f78-bf26-46ea0ad3bd8f.png?auth_key=1865617193-95e566a14c0c44aa87eda89380905e0b-0-3d7666e01e6759040361f26d0afcc5df" alt="Science Teacher" class="teacher-img mb-4 transition duration-500">
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-1">Mr.Abdullahi Ahmad</h3>
+                    <p class="text-blue-600 font-medium mb-3 text-sm sm:text-base">Head of IT <p>
+                    <p class="text-gray-600 text-xs sm:text-sm">
+              
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-12 md:py-16 bg-gray-50 mobile-section-padding">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12 md:mb-16" data-aos="fade-up">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 title-font section-title">Contact Us</h2>
+                <div class="w-16 sm:w-20 h-1 bg-blue-600 mx-auto mb-6"></div>
+                <p class="text-gray-600 max-w-3xl mx-auto text-sm sm:text-base">
+                    We'd love to hear from you. Visit us or reach out through any of these channels
+                </p>
+            </div>
+            <div class="flex flex-col md:flex-row gap-6 md:gap-8">
+                <div class="md:w-1/2" data-aos="fade-right">
+                    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md mb-6">
+                        <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-4">School Address</h3>
+                        <div class="flex items-start mb-4">
+                            <div class="bg-blue-100 p-2 rounded-full mr-3 sm:mr-4">
+                                <i data-feather="map-pin" class="text-blue-600 w-4 h-4 sm:w-5 sm:h-5"></i>
+                            </div>
+                            <p class="text-gray-600 text-sm sm:text-base">
+                                No 8 School Road, Abakwa, Kaduna, Nigeria
+                            </p>
+                        </div>
+                        <div class="h-48 sm:h-64 rounded-lg overflow-hidden">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3923.105693708035!2d7.433845614796143!3d10.52391049247688!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x104d356a4f2f1e3f%3A0x1b3e3b3b3b3b3b3b!2sKaduna!5e0!3m2!1sen!2sng!4v1620000000000!5m2!1sen!2sng" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2" data-aos="fade-left">
+                    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md mb-6">
+                        <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-4">Contact Information</h3>
+                        <div class="flex items-start mb-4">
+                            <div class="bg-blue-100 p-2 rounded-full mr-3 sm:mr-4">
+                                <i data-feather="phone" class="text-blue-600 w-4 h-4 sm:w-5 sm:h-5"></i>
+                            </div>
+                            <p class="text-gray-600 text-sm sm:text-base">
+                                09167661476<br>
+                                07062818133
+                            </p>
+                        </div>
+                        <div class="flex items-start mb-4">
+                            <div class="bg-blue-100 p-2 rounded-full mr-3 sm:mr-4">
+                                <i data-feather="mail" class="text-blue-600 w-4 h-4 sm:w-5 sm:h-5"></i>
+                            </div>
+                            <p class="text-gray-600 text-sm sm:text-base">
+                                ahmsalheritageacademy@gmail.com
+                            </p>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 p-2 rounded-full mr-3 sm:mr-4">
+                                <i data-feather="clock" class="text-blue-600 w-4 h-4 sm:w-5 sm:h-5"></i>
+                            </div>
+                            <p class="text-gray-600 text-sm sm:text-base">
+                                Monday - Friday: 7:30 AM - 4:00 PM<br>
+                                Saturday: 9:00 AM - 1:00 PM
+                            </p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+                        <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-4">Send Us a Message</h3>
+                        <form>
+                            <div class="mb-3 sm:mb-4">
+                                <input type="text" placeholder="Your Name" class="w-full px-3 py-2 sm:px-4 sm:py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base contact-form">
+                            </div>
+                            <div class="mb-3 sm:mb-4">
+                                <input type="email" placeholder="Your Email" class="w-full px-3 py-2 sm:px-4 sm:py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base contact-form">
+                            </div>
+                            <div class="mb-3 sm:mb-4">
+                                <input type="text" placeholder="Subject" class="w-full px-3 py-2 sm:px-4 sm:py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base contact-form">
+                            </div>
+                            <div class="mb-3 sm:mb-4">
+                                <textarea placeholder="Your Message" rows="3" class="w-full px-3 py-2 sm:px-4 sm:py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base contact-form"></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-medium w-full text-sm sm:text-base">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 sm:py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="bg-blue-600 p-2 rounded-full">
+                            <i data-feather="book-open" class="text-white"></i>
+                        </div>
+                        <h3 class="title-font text-lg sm:text-xl font-bold"> </h3>
+                    </div>
+                    <p class="text-gray-400 mb-4 text-xs sm:text-sm">
+                        Striving for excellence in education since 2005. Providing quality education in a nurturing environment.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-base sm:text-lg font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-1 sm:space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-blue-400 transition text-xs sm:text-sm">Home</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-blue-400 transition text-xs sm:text-sm">About Us</a></li>
+                        <li><a href="#mission" class="text-gray-400 hover:text-blue-400 transition text-xs sm:text-sm">Mission & Vision</a></li>
+                        <li><a href="#events" class="text-gray-400 hover:text-blue-400 transition text-xs sm:text-sm">Events</a></li>
+                        <li><a href="#gallery" class="text-gray-400 hover:text-blue-400 transition text-xs sm:text-sm">Gallery</a></li>
+                        <li><a href="#team" class="text-gray-400 hover:text-blue-400 transition text-xs sm:text-sm">Our Team</a></li>
+                        <li><a href="/check-result" class="text-gray-400 hover:text-blue-400 transition text-xs sm:text-sm">Check Results</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-base sm:text-lg font-bold mb-4">Contact Info</h4>
+                    <ul class="space-y-1 sm:space-y-2">
+                        <li class="flex items-center">
+                            <i data-feather="map-pin" class="text-blue-400 w-3 h-3 sm:w-4 sm:h-4 mr-2"></i>
+                            <span class="text-gray-400 text-xs sm:text-sm">No 8 School Road, Abakwa, Kaduna</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="phone" class="text-blue-400 w-3 h-3 sm:w-4 sm:h-4 mr-2"></i>
+                            <span class="text-gray-400 text-xs sm:text-sm">09167661476, 07062818133</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i data-feather="mail" class="text-blue-400 w-3 h-3 sm:w-4 sm:h-4 mr-2"></i>
+                            <span class="text-gray-400 text-xs sm:text-sm">ahmsalheritageacademy@gmail.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 sm:mt-12 pt-6 text-center text-gray-400 text-xs sm:text-sm">
+                <p>&copy; 2023  . All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('mobile-nav-active');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('mobile-nav-active');
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
+        });
+        
+        // Gallery Carousel
+        const galleryContainer = document.querySelector('.gallery-container');
+        const gallerySlides = document.querySelectorAll('.gallery-slide');
+        const galleryPrev = document.getElementById('gallery-prev');
+        const galleryNext = document.getElementById('gallery-next');
+        const galleryIndicators = document.getElementById('gallery-indicators');
+        const thumbnailGallery = document.getElementById('thumbnail-gallery');
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        
+        let currentSlide = 0;
+        const totalSlides = gallerySlides.length;
+        
+        // Create indicators
+        for (let i = 0; i < totalSlides; i++) {
+            const indicator = document.createElement('div');
+            indicator.classList.add('gallery-indicator');
+            if (i === 0) indicator.classList.add('active');
+            indicator.addEventListener('click', () => goToSlide(i));
+            galleryIndicators.appendChild(indicator);
+        }
+        
+        const indicators = document.querySelectorAll('.gallery-indicator');
+        
+        function updateGallery() {
+            galleryContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            // Update indicators
+            indicators.forEach((indicator, index) => {
+                if (index === currentSlide) {
+                    indicator.classList.add('active');
+                } else {
+                    indicator.classList.remove('active');
+                }
+            });
+            
+            // Update thumbnails
+            thumbnails.forEach((thumbnail, index) => {
+                if (index === currentSlide) {
+                    thumbnail.classList.add('active');
+                    // Scroll thumbnail into view
+                    thumbnail.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                } else {
+                    thumbnail.classList.remove('active');
+                }
+            });
+        }
+        
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            updateGallery();
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateGallery();
+        }
+        
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            updateGallery();
+        }
+        
+        galleryNext.addEventListener('click', nextSlide);
+        galleryPrev.addEventListener('click', prevSlide);
+        
+        // Thumbnail click events
+        thumbnails.forEach(thumbnail => {
+            thumbnail.addEventListener('click', () => {
+                const index = parseInt(thumbnail.getAttribute('data-index'));
+                goToSlide(index);
+            });
+        });
+        
+        // Touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        galleryContainer.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        galleryContainer.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                // Swiped left
+                nextSlide();
+            }
+            if (touchEndX > touchStartX + 50) {
+                // Swiped right
+                prevSlide();
+            }
+        }
+        
+        // Lightbox functionality
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxClose = document.getElementById('lightbox-close');
+        const lightboxPrev = document.getElementById('lightbox-prev');
+        const lightboxNext = document.getElementById('lightbox-next');
+        let lightboxIndex = 0;
+        
+        // Get all gallery images
+        const galleryImages = Array.from(gallerySlides).map(slide => slide.querySelector('img').src);
+        
+        // Open lightbox when clicking on a gallery image
+        gallerySlides.forEach((slide, index) => {
+            const img = slide.querySelector('img');
+            img.addEventListener('click', () => {
+                lightboxIndex = index;
+                updateLightbox();
+                lightbox.style.display = 'flex';
+            });
+        });
+        
+        // Close lightbox
+        lightboxClose.addEventListener('click', () => {
+            lightbox.style.display = 'none';
+        });
+        
+        // Navigate lightbox
+        lightboxPrev.addEventListener('click', () => {
+            lightboxIndex = (lightboxIndex - 1 + galleryImages.length) % galleryImages.length;
+            updateLightbox();
+        });
+        
+        lightboxNext.addEventListener('click', () => {
+            lightboxIndex = (lightboxIndex + 1) % galleryImages.length;
+            updateLightbox();
+        });
+        
+        function updateLightbox() {
+            lightboxImg.src = galleryImages[lightboxIndex];
+        }
+        
+        // Close lightbox when clicking outside the image
+        lightbox.addEventListener('click', e => {
+            if (e.target === lightbox) {
+                lightbox.style.display = 'none';
+            }
+        });
+        
+        // Keyboard navigation for lightbox
+        document.addEventListener('keydown', e => {
+            if (lightbox.style.display === 'flex') {
+                if (e.key === 'ArrowLeft') {
+                    lightboxIndex = (lightboxIndex - 1 + galleryImages.length) % galleryImages.length;
+                    updateLightbox();
+                } else if (e.key === 'ArrowRight') {
+                    lightboxIndex = (lightboxIndex + 1) % galleryImages.length;
+                    updateLightbox();
+                } else if (e.key === 'Escape') {
+                    lightbox.style.display = 'none';
+                }
+            }
+        });
+    </script>
+    <script>feather.replace();</script>
+</body>
+</html>

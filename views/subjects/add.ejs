@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Subject</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+    body { font-family: 'Comic Neue', cursive; background-color: #f0f9ff; }
+    /* Custom scrollbar for sidebar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+    .rainbow-text {
+      background: linear-gradient(to right, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3);
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: rainbow 3s linear infinite;
+      background-size: 400% 100%;
+    }
+    @keyframes rainbow { 0% {background-position:0% 50%} 100% {background-position:100% 50%} }
+    
+    /* Tag input styles */
+    .tag-input-container {
+      min-height: 50px;
+      padding: 8px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      cursor: text;
+      transition: all 0.3s ease;
+    }
+    
+    .tag-input-container:focus-within {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .subject-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      animation: tagAppear 0.3s ease;
+      transition: all 0.2s ease;
+    }
+    
+    .subject-tag:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tag-remove {
+      margin-left: 8px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+    }
+    
+    .tag-remove:hover {
+      opacity: 1;
+    }
+    
+    .tag-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      min-width: 100px;
+      font-size: 14px;
+      padding: 4px;
+    }
+    
+    @keyframes tagAppear {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    /* Color palette for tags */
+    .tag-blue { background-color: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+    .tag-green { background-color: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+    .tag-purple { background-color: #e9d5ff; color: #6b21a8; border: 1px solid #c084fc; }
+    .tag-pink { background-color: #fce7f3; color: #9f1239; border: 1px solid #f9a8d4; }
+    .tag-yellow { background-color: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+    .tag-red { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .tag-indigo { background-color: #e0e7ff; color: #3730a3; border: 1px solid #a5b4fc; }
+    .tag-teal { background-color: #ccfbf1; color: #134e4a; border: 1px solid #5eead4; }
+    
+    /* Class selection styles */
+    .class-group {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 16px;
+      background-color: #f9fafb;
+    }
+    
+    .class-group-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    .class-checkbox {
+      display: flex;
+      align-items: center;
+      padding: 6px 0;
+    }
+    
+    .class-checkbox input[type="checkbox"] {
+      margin-right: 8px;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    
+    .class-checkbox label {
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .select-all-btn {
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+    
+    .select-all-btn:hover {
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-100">
+
+  <div class="flex h-screen overflow-hidden">
+
+    <aside id="sidebar" style="overflow-y: scroll;" class="fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-blue-600 to-purple-700 text-white p-6 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center space-x-3">
+          <i class="fas fa-school text-2xl"></i>
+          <span class="text-xl font-bold">AHA Dashboard</span>
+        </div>
+        <button id="closeSidebar" class="md:hidden text-white text-2xl">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <nav class="space-y-1 flex-1 overflow-y-auto sidebar-scroll pb-4">
+        <!-- Dashboard -->
+        <a href="/dashboard" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-home w-5 text-center"></i> <span class="text-sm">Home</span>
+        </a>
+
+        <!-- Students -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Students</p>
+        </div>
+        <a href="/students/biodata" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-id-card w-5 text-center"></i> <span class="text-sm">Student Biodata</span>
+        </a>
+        <a href="/students/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-users w-5 text-center"></i> <span class="text-sm">View Students</span>
+        </a>
+
+        <!-- Teachers (Admins only) -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Teachers</p>
+        </div>
+        <a href="/teachers/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-chalkboard-teacher w-5 text-center"></i> <span class="text-sm">Add Teacher</span>
+        </a>
+        <a href="/teachers/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-user-tie w-5 text-center"></i> <span class="text-sm">View Teachers</span>
+        </a>
+
+        <!-- Subjects -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Subjects</p>
+        </div>
+        <a href="/subjects/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book w-5 text-center"></i> <span class="text-sm">Add Subject</span>
+        </a>
+        <a href="/subjects/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book-open w-5 text-center"></i> <span class="text-sm">View Subjects</span>
+        </a>
+
+        <!-- Results -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Results</p>
+        </div>
+        <a href="/results/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-file-circle-plus w-5 text-center"></i> <span class="text-sm">Add Result</span>
+        </a>
+        <a href="/results/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-list w-5 text-center"></i> <span class="text-sm">View Results</span>
+        </a>
+        <a href="/results/viewClassResult" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-table w-5 text-center"></i> <span class="text-sm">View Class Results</span>
+        </a>
+
+        <!-- Admin Only -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Admin</p>
+        </div>
+        <a href="/admin/sessions" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-calendar-plus w-5 text-center"></i> <span class="text-sm">Add Session</span>
+        </a>
+        <a href="/generate" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-key w-5 text-center"></i> <span class="text-sm">Generate PINs</span>
+        </a>
+        <a href="/pins" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-lock w-5 text-center"></i> <span class="text-sm">Created PINs</span>
+        </a>
+        <a href="/collections/new" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-money-bill-wave w-5 text-center"></i> <span class="text-sm">New Collection</span>
+        </a>
+        <a href="/collections" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition bg-blue-800">
+          <i class="fas fa-money-check-alt w-5 text-center"></i> <span class="text-sm">View Collections</span>
+        </a>
+        <a href="/promotion" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-graduation-cap w-5 text-center"></i> <span class="text-sm">Bulk Promotion</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40 md:hidden"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col md:ml-64">
+
+      <!-- Navbar -->
+      <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white flex items-center justify-between">
+        <div class="flex items-center justify-between w-full">
+          <h1 class="text-2xl md:text-3xl font-bold flex items-center">
+            <i class="fas fa-book mr-3"></i>
+            <span class="rainbow-text">Add Subject</span>
+          </h1>
+          <button id="openSidebar" class="md:hidden text-2xl">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+        <p class="hidden md:block text-blue-100">Register New Subject into the System</p>
+      </div>
+
+      <!-- Main Page Content -->
+      <div class="flex-1 overflow-y-auto p-6">
+        
+        <% if (typeof successMessage !== "undefined" && successMessage) { %>
+        <!-- Success Modal -->
+        <div id="successModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div class="bg-white rounded-lg shadow-lg p-6 w-96 text-center">
+            <h2 class="text-xl font-semibold mb-4">Success ✅</h2>
+            <p class="mb-6"><%= successMessage %></p>
+            <button onclick="closeModal()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Okay</button>
+          </div>
+        </div>
+        <% } %>
+
+        <!-- Subject Form -->
+<form action="/subjects/add" method="POST" class="bg-white rounded-xl p-6 shadow border border-gray-200 mb-6">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Class Selection -->
+    <div class="lg:col-span-2">
+      <label class="block text-gray-700 font-medium mb-2">Select Classes:</label>
+      
+      <!-- Nursery Classes -->
+      <div class="class-group">
+        <div class="class-group-header">
+          <h3 class="font-semibold text-blue-700">Nursery Classes</h3>
+          <button type="button" onclick="toggleClassGroup('nursery')" class="select-all-btn bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+            Select All
+          </button>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+          <div class="class-checkbox">
+            <input type="checkbox" name="classLevels" value="Pre-Nursery" id="class-pre-nursery" class="nursery-class">
+            <label for="class-pre-nursery">Pre-Nursery</label>
+          </div>
+          <div class="class-checkbox">
+            <input type="checkbox" name="classLevels" value="Nursery 1" id="class-nursery-1" class="nursery-class">
+            <label for="class-nursery-1">Nursery 1</label>
+          </div>
+          <div class="class-checkbox">
+            <input type="checkbox" name="classLevels" value="Nursery 2" id="class-nursery-2" class="nursery-class">
+            <label for="class-nursery-2">Nursery 2</label>
+          </div>
+          <div class="class-checkbox">
+            <input type="checkbox" name="classLevels" value="Nursery 2B" id="class-nursery-2b" class="nursery-class">
+            <label for="class-nursery-2b">Nursery 2B</label>
+          </div>
+          <div class="class-checkbox">
+            <input type="checkbox" name="classLevels" value="Nursery 3" id="class-nursery-3" class="nursery-class">
+            <label for="class-nursery-3">Nursery 3</label>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Primary Classes -->
+      <div class="class-group">
+        <div class="class-group-header">
+          <h3 class="font-semibold text-green-700">Primary Classes</h3>
+          <button type="button" onclick="toggleClassGroup('primary')" class="select-all-btn bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+            Select All
+          </button>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+          <div class="class-checkbox">
+            <input type="checkbox" name="classLevels" value="Primary 1" id="class-primary-1" class="primary-class">
+            <label for="class-primary-1">Primary 1</label>
+          </div>
+          <div class="class-checkbox">
+            <input type="checkbox" name="classLevels" value="Primary 2" id="class-primary-2" class="primary-class">
+            <label for="class-primary-2">Primary 2</label>
+          </div>
+          <div class="class-checkbox">
+            <input type="checkbox" name="classLevels" value="Primary 3" id="class-primary-3" class="primary-class">
+            <label for="class-primary-3">Primary 3</label>
+          </div>
+          <div class="class-checkbox">
+            <input type="checkbox" name="classLevels" value="Primary 4" id="class-primary-4" class="primary-class">
+            <label for="class-primary-4">Primary 4</label>
+          </div>
+          <div class="class-checkbox">
+            <input type="checkbox" name="classLevels" value="Primary 5" id="class-primary-5" class="primary-class">
+            <label for="class-primary-5">Primary 5</label>
+          </div>
+          <div class="class-checkbox">
+            <input type="checkbox" name="classLevels" value="Primary 6" id="class-primary-6" class="primary-class">
+            <label for="class-primary-6">Primary 6</label>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Junior Secondary Classes -->
+      <div class="class-group">
+        <div class="class-group-header">
+          <h3 class="font-semibold text-purple-700">Junior Secondary Classes</h3>
+          <button type="button" onclick="toggleClassGroup('jss')" class="select-all-btn bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600">
+            Select All
+          </button>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+          <div class="class-checkbox">
+            <input type="checkbox" name="classLevels" value="JSS 1" id="class-jss-1" class="jss-class">
+            <label for="class-jss-1">JSS 1</label>
+          </div>
+          <div class="class-checkbox">
+            <input type="checkbox" name="classLevels" value="JSS 2" id="class-jss-2" class="jss-class">
+            <label for="class-jss-2">JSS 2</label>
+          </div>
+          <div class="class-checkbox">
+            <input type="checkbox" name="classLevels" value="JSS 3" id="class-jss-3" class="jss-class">
+            <label for="class-jss-3">JSS 3</label>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Senior Secondary Classes -->
+      <div class="class-group">
+        <div class="class-group-header">
+          <h3 class="font-semibold text-orange-700">Senior Secondary Classes</h3>
+          <button type="button" onclick="toggleClassGroup('ss')" class="select-all-btn bg-orange-500 text-white px-3 py-1 rounded hover:bg-orange-600">
+            Select All
+          </button>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+          <div class="class-checkbox">
+            <input type="checkbox" name="classLevels" value="SS 1" id="class-ss-1" class="ss-class">
+            <label for="class-ss-1">SS 1</label>
+          </div>
+          <div class="class-checkbox">
+            <input type="checkbox" name="classLevels" value="SS 2" id="class-ss-2" class="ss-class">
+            <label for="class-ss-2">SS 2</label>
+          </div>
+          <div class="class-checkbox">
+            <input type="checkbox" name="classLevels" value="SS 3" id="class-ss-3" class="ss-class">
+            <label for="class-ss-3">SS 3</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stream Selection (for SS classes) -->
+    <div id="streamSection" style="display:none;" class="lg:col-span-2">
+      <label class="block text-gray-700 font-medium mb-2">Stream for SS Classes:</label>
+      <div class="flex flex-wrap gap-4">
+        <label class="flex items-center">
+          <input type="radio" name="stream" value="General" checked class="mr-2">
+          <span>General</span>
+        </label>
+        <label class="flex items-center">
+          <input type="radio" name="stream" value="Science" class="mr-2">
+          <span>Science</span>
+        </label>
+        <label class="flex items-center">
+          <input type="radio" name="stream" value="Arts" class="mr-2">
+          <span>Arts</span>
+        </label>
+        <label class="flex items-center">
+          <input type="radio" name="stream" value="Commercial" class="mr-2">
+          <span>Commercial</span>
+        </label>
+      </div>
+      <p class="text-xs text-gray-500 mt-1">This will apply to all selected SS classes</p>
+    </div>
+
+    <!-- Subjects input with tag styling -->
+    <div class="lg:col-span-2">
+      <label class="block text-gray-700 font-medium mb-2">Subjects (press comma or enter to add):</label>
+      <div id="tagInputContainer" class="tag-input-container" onclick="focusInput()">
+        <input type="text" id="subjectInput" class="tag-input" placeholder="Type subject name and press comma or enter...">
+      </div>
+      <input type="hidden" name="subjects" id="subjectsHidden">
+      <p class="text-xs text-gray-500 mt-1">Type a subject name and press comma (,) or Enter to add it as a tag</p>
+    </div>
+  </div>
+
+  <div class="mt-6 flex justify-between">
+    <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">Save Subjects</button>
+    <a href="/subjects/view" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700">View Subjects</a>
+  </div>
+</form>
+
+<script>
+  const tagInputContainer = document.getElementById("tagInputContainer");
+  const subjectInput = document.getElementById("subjectInput");
+  const subjectsHidden = document.getElementById("subjectsHidden");
+  const streamSection = document.getElementById("streamSection");
+  
+  // Array to store subjects
+  let subjects = [];
+  
+  // Color palette for tags
+  const tagColors = ['tag-blue', 'tag-green', 'tag-purple', 'tag-pink', 'tag-yellow', 'tag-red', 'tag-indigo', 'tag-teal'];
+  
+  // Monitor class selection changes
+  document.querySelectorAll('input[name="classLevels"]').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+      checkSSClassSelection();
+    });
+  });
+  
+  // Check if any SS class is selected
+  function checkSSClassSelection() {
+    const ssClasses = document.querySelectorAll('.ss-class:checked');
+    if (ssClasses.length > 0) {
+      streamSection.style.display = 'block';
+    } else {
+      streamSection.style.display = 'none';
+    }
+  }
+  
+  // Toggle class group selection
+  function toggleClassGroup(group) {
+    const checkboxes = document.querySelectorAll(`.${group}-class`);
+    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    
+    checkboxes.forEach(checkbox => {
+      checkbox.checked = !allChecked;
+    });
+    
+    checkSSClassSelection();
+  }
+  
+  // Focus input when container is clicked
+  function focusInput() {
+    subjectInput.focus();
+  }
+  
+  // Handle keypress events
+  subjectInput.addEventListener('keydown', function(e) {
+    if (e.key === ',' || e.key === 'Enter') {
+      e.preventDefault();
+      addSubject();
+    }
+  });
+  
+  // Handle paste events
+  subjectInput.addEventListener('paste', function(e) {
+    e.preventDefault();
+    const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+    const pastedSubjects = pastedText.split(',').map(s => s.trim()).filter(s => s);
+    
+    pastedSubjects.forEach(subject => {
+      if (subject && !subjects.includes(subject)) {
+        subjects.push(subject);
+        createTagElement(subject);
+      }
+    });
+    
+    updateHiddenInput();
+    subjectInput.value = '';
+  });
+  
+  // Add subject function
+  function addSubject() {
+    const subject = subjectInput.value.trim();
+    
+    if (subject && !subjects.includes(subject)) {
+      subjects.push(subject);
+      createTagElement(subject);
+      updateHiddenInput();
+    }
+    
+    subjectInput.value = '';
+  }
+  
+  // Create tag element
+  function createTagElement(subject) {
+    const tag = document.createElement('div');
+    tag.className = `subject-tag ${getRandomColor()}`;
+    tag.innerHTML = `
+      ${subject}
+      <span class="tag-remove" onclick="removeSubject('${subject}')">
+        <i class="fas fa-times"></i>
+      </span>
+    `;
+    
+    // Insert before the input
+    tagInputContainer.insertBefore(tag, subjectInput);
+  }
+  
+  // Get random color for tag
+  function getRandomColor() {
+    return tagColors[Math.floor(Math.random() * tagColors.length)];
+  }
+  
+  // Remove subject
+  function removeSubject(subject) {
+    subjects = subjects.filter(s => s !== subject);
+    updateHiddenInput();
+    renderTags();
+  }
+  
+  // Render all tags
+  function renderTags() {
+    // Clear existing tags
+    const existingTags = tagInputContainer.querySelectorAll('.subject-tag');
+    existingTags.forEach(tag => tag.remove());
+    
+    // Recreate tags
+    subjects.forEach(subject => {
+      createTagElement(subject);
+    });
+  }
+  
+  // Update hidden input
+  function updateHiddenInput() {
+    subjectsHidden.value = subjects.join(', ');
+  }
+  
+  // Form submission validation
+  document.querySelector('form').addEventListener('submit', function(e) {
+    // Add any remaining text in input as a subject
+    if (subjectInput.value.trim()) {
+      addSubject();
+    }
+    
+    // Check if at least one class is selected
+    const selectedClasses = document.querySelectorAll('input[name="classLevels"]:checked');
+    if (selectedClasses.length === 0) {
+      e.preventDefault();
+      alert('Please select at least one class');
+      return;
+    }
+    
+    // Check if at least one subject is added
+    if (subjects.length === 0) {
+      e.preventDefault();
+      alert('Please add at least one subject');
+      return;
+    }
+    
+    // Check if SS classes are selected but no stream is chosen
+    const ssClasses = document.querySelectorAll('.ss-class:checked');
+    if (ssClasses.length > 0 && !document.querySelector('input[name="stream"]:checked')) {
+      e.preventDefault();
+      alert('Please select a stream for SS classes');
+      return;
+    }
+  });
+</script>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="bg-gray-100 p-4 border-t-2 border-gray-200 text-center">
+        <p class="text-gray-600 text-sm"><i class="fas fa-school mr-1"></i> Ahmsal Heritage Academy Subject Management</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar Script -->
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const openBtn = document.getElementById('openSidebar');
+    const closeBtn = document.getElementById('closeSidebar');
+    const overlay = document.getElementById('overlay');
+
+    openBtn.addEventListener('click', () => {
+      sidebar.classList.remove('-translate-x-full');
+      overlay.classList.remove('hidden');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    });
+
+    function closeModal(){
+      document.getElementById("successModal").style.display="none";
+    }
+  </script>
+</body>
+</html>

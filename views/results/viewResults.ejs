@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>View Class Results - Ahmsal Heritage Academy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Add libraries for export functionality -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+    body { 
+      font-family: 'Comic Neue', cursive; 
+      background-color: #f0f9ff;
+    }
+    /* Custom scrollbar for sidebar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+    .rainbow-text {
+      background: linear-gradient(to right, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3);
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: rainbow 3s linear infinite;
+      background-size: 400% 100%;
+    }
+    @keyframes rainbow { 0% {background-position:0% 50%} 100% {background-position:100% 50%} }
+    .sidebar {
+      width: 250px;
+    }
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+      }
+      .filter-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .result-table {
+        font-size: 0.6rem !important;
+      }
+      table th, table td {
+        padding: 0.15rem !important;
+      }
+      .text-xs {
+        font-size: 0.6rem !important;
+      }
+      .sidebar-nav a {
+        padding: 0.5rem !important;
+      }
+      .header-title {
+        font-size: 0.8rem !important;
+      }
+      .result-table-container {
+        overflow-x: auto;
+        width: 100%;
+        -webkit-overflow-scrolling: touch;
+      }
+      .result-table {
+        min-width: 600px;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-100">
+
+  <div class="flex h-screen overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" style="overflow-y: scroll;" class="fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-blue-600 to-purple-700 text-white p-6 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center space-x-3">
+          <i class="fas fa-school text-2xl"></i>
+          <span class="text-xl font-bold">AHA Dashboard</span>
+        </div>
+        <button id="closeSidebar" class="md:hidden text-white text-2xl">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <nav class="space-y-1 flex-1 overflow-y-auto sidebar-scroll pb-4">
+        <!-- Dashboard -->
+        <a href="/dashboard" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-home w-5 text-center"></i> <span class="text-sm">Home</span>
+        </a>
+
+        <!-- Students -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Students</p>
+        </div>
+        <a href="/students/biodata" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-id-card w-5 text-center"></i> <span class="text-sm">Student Biodata</span>
+        </a>
+        <a href="/students/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-users w-5 text-center"></i> <span class="text-sm">View Students</span>
+        </a>
+
+        <!-- Teachers (Admins only) -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Teachers</p>
+        </div>
+        <a href="/teachers/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-chalkboard-teacher w-5 text-center"></i> <span class="text-sm">Add Teacher</span>
+        </a>
+        <a href="/teachers/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-user-tie w-5 text-center"></i> <span class="text-sm">View Teachers</span>
+        </a>
+
+        <!-- Subjects -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Subjects</p>
+        </div>
+        <a href="/subjects/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book w-5 text-center"></i> <span class="text-sm">Add Subject</span>
+        </a>
+        <a href="/subjects/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book-open w-5 text-center"></i> <span class="text-sm">View Subjects</span>
+        </a>
+
+        <!-- Results -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Results</p>
+        </div>
+        <a href="/results/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-file-circle-plus w-5 text-center"></i> <span class="text-sm">Add Result</span>
+        </a>
+        <a href="/results/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-list w-5 text-center"></i> <span class="text-sm">View Results</span>
+        </a>
+        <a href="/results/viewClassResult" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition bg-blue-800">
+          <i class="fas fa-table w-5 text-center"></i> <span class="text-sm">View Class Results</span>
+        </a>
+
+        <!-- Admin Only -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Admin</p>
+        </div>
+        <a href="/admin/sessions" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-calendar-plus w-5 text-center"></i> <span class="text-sm">Add Session</span>
+        </a>
+        <a href="/generate" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-key w-5 text-center"></i> <span class="text-sm">Generate PINs</span>
+        </a>
+        <a href="/pins" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-lock w-5 text-center"></i> <span class="text-sm">Created PINs</span>
+        </a>
+        <a href="/collections/new" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-money-bill-wave w-5 text-center"></i> <span class="text-sm">New Collection</span>
+        </a>
+        <a href="/collections" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-money-check-alt w-5 text-center"></i> <span class="text-sm">View Collections</span>
+        </a>
+        <a href="/promotion" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-graduation-cap w-5 text-center"></i> <span class="text-sm">Bulk Promotion</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40 md:hidden"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col md:ml-64">
+
+      <!-- Navbar -->
+      <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white flex items-center justify-between">
+        <div class="flex items-center justify-between w-full">
+          <h1 class="text-2xl md:text-3xl font-bold flex items-center">
+            <i class="fas fa-graduation-cap mr-3"></i>
+            <span class="rainbow-text">View Class Results</span>
+          </h1>
+          <button id="openSidebar" class="md:hidden text-2xl">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+        <p class="hidden md:block text-blue-100">Ahmsal Heritage Academy Student Result Management</p>
+      </div>
+
+      <!-- Main Page Content -->
+      <div class="flex-1 overflow-y-auto p-6">
+        <div class=" mx-auto  overflow-hidden ">
+          <!-- Search Form -->
+          <form method="POST" action="/results/viewClassResult" class="">
+            <h2 class="text-lg font-bold mb-4 text-blue-800 flex items-center">
+              <i class="fas fa-search mr-2"></i> Filter Results
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <label class="block text-gray-700 font-medium mb-2">Class:</label>
+                <select name="classLevel" required class="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-blue-500">
+                  <option value="">Select Class</option>
+                  <% classes.forEach(c => { %>
+                    <option value="<%= c %>" <%= filters && filters.classLevel === c ? "selected" : "" %>>
+                      <%= c %>
+                    </option>
+                  <% }) %>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-gray-700 font-medium mb-2">Session:</label>
+                <select name="sessionId" required class="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-blue-500">
+                  <option value="">Select Session</option>
+                  <% sessions.forEach(sess => { %>
+                    <option value="<%= sess._id %>" <%= filters && filters.sessionId==sess._id.toString() ? "selected" : "" %>>
+                      <%= sess.name %>
+                    </option>
+                  <% }) %>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-gray-700 font-medium mb-2">Term:</label>
+                <select name="term" required class="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-blue-500">
+                  <option value="">Select Term</option>
+                  <option value="First Term" <%= filters && filters.term=="First Term" ? "selected" : "" %>>First Term</option>
+                  <option value="Second Term" <%= filters && filters.term=="Second Term" ? "selected" : "" %>>Second Term</option>
+                  <option value="Third Term" <%= filters && filters.term=="Third Term" ? "selected" : "" %>>Third Term</option>
+                </select>
+              </div>
+
+              <div class="flex items-end">
+                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center w-full">
+                  <i class="fas fa-filter mr-2"></i> Filter Results
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <!-- Results Table -->
+          <% if (results && results.length > 0) { %>
+            <div class="p-6">
+              <!-- Export buttons -->
+              <div class="flex justify-end mb-4 space-x-2">
+                <button id="exportExcel" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center">
+                  <i class="fas fa-file-excel mr-2"></i> Export to Excel
+                </button>
+                <button id="exportPDF" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center">
+                  <i class="fas fa-file-pdf mr-2"></i> Export to PDF
+                </button>
+              </div>
+              
+              <div id="resultsTableContainer" class="result-table-container">
+                <div class="mb-4 text-center">
+                  <h2 class="text-xl font-bold text-blue-800">Class Results</h2>
+                  <p class="text-gray-600">
+                    Class: <span class="font-semibold"><%= filters.classLevel %></span> | 
+                    Session: <span class="font-semibold"><%= sessions.find(s => s._id.toString() === filters.sessionId)?.name %></span> | 
+                    Term: <span class="font-semibold"><%= filters.term %></span>
+                  </p>
+                </div>
+                <table class="w-full border text-sm result-table">
+                  <thead class="bg-blue-200 text-gray-800">
+                    <tr>
+                      <th class="border px-4 py-2">Student</th>
+                      <th class="border px-4 py-2">Subjects & Scores</th>
+                      <th class="border px-4 py-2">Total</th>
+                      <th class="border px-4 py-2">Average</th>
+                      <th class="border px-4 py-2">Position</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% results.forEach(r => { %>
+                      <tr class="odd:bg-white even:bg-blue-50">
+                        <td class="border px-4 py-2 font-semibold"><%= r._id.fullName %></td>
+                        <td class="border px-4 py-2">
+                          <% if (r.scores && r.scores.length > 0) { %>
+                            <div class="grid grid-cols-2 gap-2">
+                              <% r.scores.forEach(s => { %>
+                                <div class="flex justify-between">
+                                  <span class="font-medium"><%= s.subject %>:</span>
+                                  <span class="text-blue-700"><%= s.score %></span>
+                                </div>
+                              <% }) %>
+                            </div>
+                          <% } else { %>
+                            <span class="text-gray-400 italic">-</span>
+                          <% } %>
+                        </td>
+                        <td class="border px-4 py-2 font-bold text-center"><%= r.totalScore %></td>
+                        <td class="border px-4 py-2 text-center">
+                          <%= (r.totalScore / (r.subjectCount || 1)).toFixed(2) %>
+                        </td>
+                        <td class="border px-4 py-2 text-center font-bold text-purple-700">
+                          <%= r.position %>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          <% } else if (filters) { %>
+            <div class="p-8 text-center">
+              <i class="fas fa-exclamation-circle text-red-500 text-4xl mb-4"></i>
+              <p class="text-red-600 font-semibold text-lg">No results found for this selection.</p>
+            </div>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="bg-gray-100 p-4 border-t-2 border-gray-200 text-center">
+        <p class="text-gray-600"><i class="fas fa-chalkboard-teacher mr-1"></i> Ahmsal Heritage Academy Student Management System</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sidebar toggle functionality
+    const sidebar = document.getElementById('sidebar');
+    const openBtn = document.getElementById('openSidebar');
+    const closeBtn = document.getElementById('closeSidebar');
+    const overlay = document.getElementById('overlay');
+
+    openBtn.addEventListener('click', () => {
+      sidebar.classList.remove('-translate-x-full');
+      overlay.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+
+    closeBtn.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    });
+
+    // Export to Excel functionality
+    document.getElementById('exportExcel').addEventListener('click', function() {
+      const table = document.querySelector('.result-table');
+      const ws = XLSX.utils.table_to_sheet(table);
+      
+      // Create a new workbook and add the worksheet
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Class Results");
+      
+      // Get filter values for filename
+      const classLevel = document.querySelector('select[name="classLevel"]').value;
+      const sessionId = document.querySelector('select[name="sessionId"]').value;
+      const sessionName = document.querySelector(`select[name="sessionId"] option[value="${sessionId}"]`).textContent;
+      const term = document.querySelector('select[name="term"]').value;
+      
+      // Generate filename with filter values
+      const filename = `ClassResults_${classLevel}_${sessionName}_${term}.xlsx`;
+      
+      // Save the file
+      XLSX.writeFile(wb, filename);
+    });
+
+    // Export to PDF functionality
+    document.getElementById('exportPDF').addEventListener('click', function() {
+      const element = document.getElementById('resultsTableContainer');
+      
+      // Get filter values for filename
+      const classLevel = document.querySelector('select[name="classLevel"]').value;
+      const sessionId = document.querySelector('select[name="sessionId"]').value;
+      const sessionName = document.querySelector(`select[name="sessionId"] option[value="${sessionId}"]`).textContent;
+      const term = document.querySelector('select[name="term"]').value;
+      
+      // Generate filename with filter values
+      const filename = `ClassResults_${classLevel}_${sessionName}_${term}.pdf`;
+      
+      // Use html2canvas to capture the table
+      html2canvas(element, {
+        scale: 1,
+        logging: false,
+        useCORS: true
+      }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jspdf.jsPDF({
+          orientation: 'landscape',
+          unit: 'mm',
+          format: 'a4'
+        });
+        
+        const imgWidth = 280; // Adjust based on your needs
+        const pageHeight = 190; // Adjust based on your needs
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 10;
+        
+        // Add the image to the PDF
+        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        
+        // Add new pages if needed
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+        
+        // Save the PDF
+        pdf.save(filename);
+      });
+    });
+  </script>
+</body>
+</html>

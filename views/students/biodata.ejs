@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Biodata</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+    body { font-family: 'Comic Neue', cursive; background-color: #f0f9ff; }
+
+    /* Custom scrollbar for sidebar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+    .rainbow-text {
+      background: linear-gradient(to right, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3);
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: rainbow 3s linear infinite;
+      background-size: 400% 100%;
+    }
+    @keyframes rainbow { 0% {background-position:0% 50%} 100% {background-position:100% 50%} }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-100">
+
+  <div class="flex h-screen overflow-hidden">
+
+<aside id="sidebar" style="overflow-y: scroll;" class="fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-blue-600 to-purple-700 text-white p-6 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center space-x-3">
+      <i class="fas fa-school text-2xl"></i>
+      <span class="text-xl font-bold">AHA Dashboard</span>
+    </div>
+    <button id="closeSidebar" class="md:hidden text-white text-2xl">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+      <nav class="space-y-1 flex-1 overflow-y-auto sidebar-scroll pb-4">
+        <!-- Dashboard -->
+        <a href="/dashboard" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-home w-5 text-center"></i> <span class="text-sm">Home</span>
+        </a>
+
+        <!-- Students -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Students</p>
+        </div>
+        <a href="/students/biodata" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-id-card w-5 text-center"></i> <span class="text-sm">Student Biodata</span>
+        </a>
+        <a href="/students/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-users w-5 text-center"></i> <span class="text-sm">View Students</span>
+        </a>
+
+        <!-- Teachers (Admins only) -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Teachers</p>
+        </div>
+        <a href="/teachers/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-chalkboard-teacher w-5 text-center"></i> <span class="text-sm">Add Teacher</span>
+        </a>
+        <a href="/teachers/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-user-tie w-5 text-center"></i> <span class="text-sm">View Teachers</span>
+        </a>
+
+        <!-- Subjects -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Subjects</p>
+        </div>
+        <a href="/subjects/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book w-5 text-center"></i> <span class="text-sm">Add Subject</span>
+        </a>
+        <a href="/subjects/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book-open w-5 text-center"></i> <span class="text-sm">View Subjects</span>
+        </a>
+
+        <!-- Results -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Results</p>
+        </div>
+        <a href="/results/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-file-circle-plus w-5 text-center"></i> <span class="text-sm">Add Result</span>
+        </a>
+        <a href="/results/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-list w-5 text-center"></i> <span class="text-sm">View Results</span>
+        </a>
+        <a href="/results/viewClassResult" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-table w-5 text-center"></i> <span class="text-sm">View Class Results</span>
+        </a>
+
+        <!-- Admin Only -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Admin</p>
+        </div>
+        <a href="/admin/sessions" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-calendar-plus w-5 text-center"></i> <span class="text-sm">Add Session</span>
+        </a>
+        <a href="/generate" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-key w-5 text-center"></i> <span class="text-sm">Generate PINs</span>
+        </a>
+        <a href="/pins" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-lock w-5 text-center"></i> <span class="text-sm">Created PINs</span>
+        </a>
+        <a href="/collections/new" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-money-bill-wave w-5 text-center"></i> <span class="text-sm">New Collection</span>
+        </a>
+        <a href="/collections" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition bg-blue-800">
+          <i class="fas fa-money-check-alt w-5 text-center"></i> <span class="text-sm">View Collections</span>
+        </a>
+        <a href="/promotion" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-graduation-cap w-5 text-center"></i> <span class="text-sm">Bulk Promotion</span>
+        </a>
+      </nav>
+</aside>
+
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40 md:hidden"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col md:ml-64">
+
+      <!-- Navbar -->
+      <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white flex items-center justify-between">
+<div class="flex items-center justify-between w-full">
+  <h1 class="text-2xl md:text-3xl font-bold flex items-center">
+    <i class="fas fa-id-card mr-3"></i>
+    <span class="rainbow-text">Student Biodata</span>
+  </h1>
+  <button id="openSidebar" class="md:hidden text-2xl">
+    <i class="fas fa-bars"></i>
+  </button>
+</div>
+
+        <p class="hidden md:block text-blue-100">Manage & Update Student Records</p>
+      </div>
+
+      <!-- Main Page Content -->
+      <div class="flex-1 overflow-y-auto p-6">
+        
+        <% if (typeof successMessage !== "undefined" && successMessage) { %>
+        <!-- Success Modal -->
+        <div id="successModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div class="bg-white rounded-lg shadow-lg p-6 w-96 text-center">
+            <h2 class="text-xl font-semibold mb-4">Success ✅</h2>
+            <p class="mb-6"><%= successMessage %></p>
+            <a href="/students/biodata" style="text-decoration: none;" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Okay</a>
+          </div>
+        </div>
+        <% } %>
+
+        <!-- Search Form -->
+        <form action="/students/search" method="POST" class="mb-8 bg-blue-50 rounded-xl p-6 border-2 border-dashed border-blue-200">
+          <h2 class="text-xl font-bold mb-4 text-blue-800 flex items-center">
+            <i class="fas fa-search mr-2"></i> Search Student
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-gray-700 font-medium mb-2">Class:</label>
+              <select id="classLevel" name="classLevel" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                <option value="">Select Class</option>
+                <option value="Pre-Nursery">Pre-Nursery</option>
+                <option value="Nursery 1">Nursery 1</option>
+                <option value="Nursery 2">Nursery 2</option>
+                <option value="Nursery 2B">Nursery 2B</option>
+                <option value="Nursery 3">Nursery 3</option>
+                <option value="Primary 1">Primary 1</option>
+                <option value="Primary 2">Primary 2</option>
+                <option value="Primary 3">Primary 3</option>
+                <option value="Primary 4">Primary 4</option>
+                <option value="Primary 5">Primary 5</option>
+                <option value="Primary 6">Primary 6</option>
+                <option value="JSS 1">JSS 1</option>
+                <option value="JSS 2">JSS 2</option>
+                <option value="JSS 3">JSS 3</option>
+                <option value="SS 1">SS 1</option>
+                <option value="SS 2">SS 2</option>
+                <option value="SS 3">SS 3</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-gray-700 font-medium mb-2">Admin No:</label>
+              <select id="adminNo" name="adminNo" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                <option value="">Select Admin No</option>
+              </select>
+            </div>
+            <div class="flex items-end">
+              <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200">
+                Search
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Student Form -->
+        <form action="/students/save" method="POST" enctype="multipart/form-data" class="bg-white rounded-xl p-6 shadow border border-gray-200 mb-6">
+          <input type="hidden" name="existingPhoto" value="<%= student ? student.photoUrl : '' %>">
+  <input type="hidden" name="originalAdminNo" value="<%= student ? student.adminNo : '' %>">
+<div class="flex flex-col items-start mb-6">
+            <div class="w-32 h-40 border-2 border-gray-300 rounded-lg flex items-center justify-center overflow-hidden bg-gray-50 mb-2">
+              <% if (student && student.photoUrl) { %>
+                <img id="photoPreview" src="<%= student.photoUrl %>" class="object-cover w-full h-full" alt="Student Photo">
+              <% } else { %>
+                <span class="text-gray-400 text-sm" id="photoPlaceholder">No Photo</span>
+              <% } %>
+            </div>
+            <input type="file" name="photo" accept="image/*" class="w-full md:w-1/2 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" onchange="previewPhoto(event)">
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-gray-700 font-medium mb-2">Admin No:</label>
+              <input type="text" name="adminNo" value="<%= student ? student.adminNo : '' %>" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block text-gray-700 font-medium mb-2">Full Name:</label>
+              <input type="text" name="fullName" value="<%= student ? student.fullName : '' %>" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block text-gray-700 font-medium mb-2">Gender:</label>
+              <select name="gender" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                <option value="Male" <%= student?.gender==="Male" ? "selected" : "" %>>Male</option>
+                <option value="Female" <%= student?.gender==="Female" ? "selected" : "" %>>Female</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-gray-700 font-medium mb-2">Date of Birth:</label>
+              <input type="date" name="dob" value="<%= student ? student.dob.toISOString().substring(0,10) : '' %>" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block text-gray-700 font-medium mb-2">Class Level:</label>
+              <select name="classLevel" required class="classlevel w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                <% ["Pre-Nursery","Nursery 1","Nursery 2","Nursery 2B","Nursery 3","Primary 1","Primary 2","Primary 3","Primary 4","Primary 5","Primary 6","JSS 1","JSS 2","JSS 3","SS 1","SS 2","SS 3"].forEach(c => { %>
+                  <option value="<%= c %>" <%= student && student.classLevel === c ? 'selected' : '' %>><%= c %></option>
+                <% }) %>
+              </select>
+            </div>
+
+          <div id="streamField" style="display:none;">
+              <label class="block text-gray-700 font-medium mb-2">Stream:</label>
+              <select name="stream" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                <option value="">Select Stream</option>
+                <option value="Science" <%= student?.stream==="Science" ? "selected" : "" %>>Science</option>
+                <option value="Arts" <%= student?.stream==="Arts" ? "selected" : "" %>>Arts</option>
+                <option value="Commercial" <%= student?.stream==="Commercial" ? "selected" : "" %>>Commercial</option>
+              </select>
+          </div>
+
+            <div>
+              <label class="block text-gray-700 font-medium mb-2">Parent Name:</label>
+              <input type="text" name="parentName" value="<%= student ? student.parentName : '' %>" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block text-gray-700 font-medium mb-2">Parent Phone:</label>
+              <input type="text" name="parentPhone" value="<%= student ? student.parentPhone : '' %>" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block text-gray-700 font-medium mb-2">Address:</label>
+              <input type="text" name="address" value="<%= student ? student.address : '' %>" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+            </div>
+          </div>
+
+          <div class="mt-6 flex justify-between">
+            <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">Save / Update</button>
+          </div>
+        </form>
+
+        <!-- Delete Form -->
+        <form action="/students/delete" method="POST" class="text-right">
+          <input type="hidden" name="adminNo" value="<%= student ? student.adminNo : '' %>">
+          <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700">Delete Student</button>
+        </form>
+      </div>
+
+      <!-- Footer -->
+      <div class="bg-gray-100 p-4 border-t-2 border-gray-200 text-center">
+        <p class="text-gray-600 text-sm"><i class="fas fa-chalkboard-teacher mr-1"></i> Ahmsal Heritage Academy Student Management System</p>
+      </div>
+    </div>
+  </div>
+<script>
+  const classSelect = document.querySelector('.classlevel');
+  const streamField = document.getElementById("streamField");
+
+  function toggleStream() {
+    if (classSelect.value.startsWith("SS")) {
+      streamField.style.display = "block";
+    } else {
+      streamField.style.display = "none";
+    }
+  }
+
+  classSelect.addEventListener("change", toggleStream);
+  window.onload = toggleStream;
+</script>
+
+  <!-- Sidebar Script -->
+  <script>
+    
+    const sidebar = document.getElementById('sidebar');
+    const openBtn = document.getElementById('openSidebar');
+    const closeBtn = document.getElementById('closeSidebar');
+    const overlay = document.getElementById('overlay');
+
+    openBtn.addEventListener('click', () => {
+      sidebar.classList.remove('-translate-x-full');
+      overlay.classList.remove('hidden');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    });
+  </script>
+
+  <!-- Script for Search & Photo Preview -->
+  <script>
+    document.getElementById("classLevel").addEventListener("change", async function() {
+      let classLevel = this.value;
+      let adminSelect = document.getElementById("adminNo");
+      adminSelect.innerHTML = "<option>Loading...</option>";
+      let res = await fetch(`/students/class/${classLevel}`);
+      let data = await res.json();
+      adminSelect.innerHTML = "<option>Select Admin No</option>";
+      data.forEach(stu => {
+        let opt = document.createElement("option");
+        opt.value = stu.adminNo;
+        opt.innerText = stu.adminNo + " - " + stu.fullName;
+        adminSelect.appendChild(opt);
+      });
+    });
+
+    function previewPhoto(event) {
+      const preview = document.getElementById("photoPreview");
+      const placeholder = document.getElementById("photoPlaceholder");
+      const file = event.target.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          if (preview) {
+            preview.src = e.target.result;
+          } else {
+            const img = document.createElement("img");
+            img.id = "photoPreview";
+            img.src = e.target.result;
+            img.className = "object-cover w-full h-full";
+            document.querySelector(".w-32.h-40").innerHTML = "";
+            document.querySelector(".w-32.h-40").appendChild(img);
+          }
+          if (placeholder) placeholder.style.display = "none";
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+  </script>
+</body>
+</html>

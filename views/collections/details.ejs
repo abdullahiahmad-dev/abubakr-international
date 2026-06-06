@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collection Details -  </title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+    body { font-family: 'Comic Neue', cursive; background-color: #f0f9ff; }
+    .rainbow-text {
+      background: linear-gradient(to right, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3);
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: rainbow 3s linear infinite;
+      background-size: 400% 100%;
+    }
+    @keyframes rainbow { 0% {background-position:0% 50%} 100% {background-position:100% 50%} }
+    
+    /* Custom scrollbar for sidebar */
+    .sidebar-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-100">
+
+  <div class="flex h-screen overflow-hidden">
+
+    <aside id="sidebar" style="overflow-y: scroll;" class="fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-blue-600 to-purple-700 text-white p-4 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-50 flex flex-col">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-3">
+          <i class="fas fa-school text-2xl"></i>
+          <span class="text-xl font-bold">  Dashboard</span>
+        </div>
+        <button id="closeSidebar" class="md:hidden text-white text-2xl">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+            <nav class="space-y-1 flex-1 overflow-y-auto sidebar-scroll pb-4">
+        <!-- Dashboard -->
+        <a href="/dashboard" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-home w-5 text-center"></i> <span class="text-sm">Home</span>
+        </a>
+
+        <!-- Students -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Students</p>
+        </div>
+        <a href="/students/biodata" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-id-card w-5 text-center"></i> <span class="text-sm">Student Biodata</span>
+        </a>
+        <a href="/students/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-users w-5 text-center"></i> <span class="text-sm">View Students</span>
+        </a>
+
+        <!-- Teachers (Admins only) -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Teachers</p>
+        </div>
+        <a href="/teachers/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-chalkboard-teacher w-5 text-center"></i> <span class="text-sm">Add Teacher</span>
+        </a>
+        <a href="/teachers/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-user-tie w-5 text-center"></i> <span class="text-sm">View Teachers</span>
+        </a>
+
+        <!-- Subjects -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Subjects</p>
+        </div>
+        <a href="/subjects/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book w-5 text-center"></i> <span class="text-sm">Add Subject</span>
+        </a>
+        <a href="/subjects/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book-open w-5 text-center"></i> <span class="text-sm">View Subjects</span>
+        </a>
+
+        <!-- Results -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Results</p>
+        </div>
+        <a href="/results/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-file-circle-plus w-5 text-center"></i> <span class="text-sm">Add Result</span>
+        </a>
+        <a href="/results/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-list w-5 text-center"></i> <span class="text-sm">View Results</span>
+        </a>
+        <a href="/results/viewClassResult" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-table w-5 text-center"></i> <span class="text-sm">View Class Results</span>
+        </a>
+
+        <!-- Admin Only -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Admin</p>
+        </div>
+        <a href="/admin/sessions" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-calendar-plus w-5 text-center"></i> <span class="text-sm">Add Session</span>
+        </a>
+        <a href="/generate" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-key w-5 text-center"></i> <span class="text-sm">Generate PINs</span>
+        </a>
+        <a href="/pins" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-lock w-5 text-center"></i> <span class="text-sm">Created PINs</span>
+        </a>
+        <a href="/collections/new" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-money-bill-wave w-5 text-center"></i> <span class="text-sm">New Collection</span>
+        </a>
+        <a href="/collections" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-money-check-alt w-5 text-center"></i> <span class="text-sm">View Collections</span>
+        </a>
+        <a href="/promotion" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-graduation-cap w-5 text-center"></i> <span class="text-sm">Bulk Promotion</span>
+        </a>
+        <a href="/admin/school-info" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-school w-5 text-center"></i> <span class="text-sm">School Info</span>
+        </a>
+        <a href="/admin/school-profile" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-user w-5 text-center"></i> <span class="text-sm">School Profile</span>
+        </a>
+      </nav>
+      
+      <div class="pt-4 border-t border-blue-500">
+        <div class="flex items-center justify-center text-xs text-blue-200">
+          <i class="fas fa-copyright mr-1"></i>  
+        </div>
+      </div>
+    </aside>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40 md:hidden"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col md:ml-64">
+
+      <!-- Navbar -->
+      <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-4 md:p-6 text-white flex items-center justify-between">
+        <div class="flex items-center justify-between w-full">
+          <h1 class="text-lg md:text-2xl font-bold flex items-center">
+            <i class="fas fa-money-check-alt mr-2 md:mr-3"></i>
+            <span class="rainbow-text text-sm md:text-base">Collection Details</span>
+          </h1>
+          <button id="openSidebar" class="md:hidden text-xl">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+        <p class="hidden md:block text-blue-100 text-sm">Manage Payment Collections</p>
+      </div>
+
+      <!-- Main Page Content -->
+      <div class="flex-1 overflow-y-auto p-3 md:p-6">
+        <div class="">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 md:mb-6">
+            <div class="mb-3 sm:mb-0">
+              <h1 class="text-xl md:text-2xl font-bold text-blue-800">Collection Details</h1>
+              <p class="text-gray-600 text-sm md:text-base"><%= collection.personName %></p>
+            </div>
+            <a href="/collections" class="px-3 py-1.5 md:px-4 md:py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm md:text-base">
+              <i class="fas fa-arrow-left mr-1 md:mr-2"></i> Back to Collections
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mb-4 md:mb-6">
+            <div class="bg-white rounded-lg md:rounded-xl shadow border border-gray-200 p-4 md:p-6">
+              <h3 class="text-sm md:text-base font-medium text-gray-900 mb-1 md:mb-2">Total Amount</h3>
+              <p class="text-xl md:text-2xl font-bold text-blue-600">₦<%= collection.totalAmount.toFixed(2) %></p>
+            </div>
+            
+            <div class="bg-white rounded-lg md:rounded-xl shadow border border-gray-200 p-4 md:p-6">
+              <h3 class="text-sm md:text-base font-medium text-gray-900 mb-1 md:mb-2">Collected Amount</h3>
+              <p class="text-xl md:text-2xl font-bold text-green-600">₦<%= collection.collectedAmount.toFixed(2) %></p>
+            </div>
+            
+            <div class="bg-white rounded-lg md:rounded-xl shadow border border-gray-200 p-4 md:p-6">
+              <h3 class="text-sm md:text-base font-medium text-gray-900 mb-1 md:mb-2">Remaining Amount</h3>
+              <p class="text-xl md:text-2xl font-bold <%= collection.remainingAmount > 0 ? 'text-red-600' : 'text-green-600' %>">
+                ₦<%= collection.remainingAmount.toFixed(2) %>
+              </p>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+            <!-- Payment Form -->
+            <div class="bg-white rounded-lg md:rounded-xl shadow border border-gray-200 p-4 md:p-6">
+              <h2 class="text-lg md:text-xl font-bold text-blue-800 mb-3 md:mb-4">Record Payment</h2>
+              
+              <% if (collection.status === 'completed') { %>
+                <div class="bg-green-100 text-green-700 p-3 rounded mb-3 md:mb-4 text-sm">
+                  This collection has been fully paid.
+                </div>
+              <% } else { %>
+                <form action="/collections/<%= collection._id %>/payment" method="POST">
+                  <div class="mb-3 md:mb-4">
+                    <label for="amount" class="block text-gray-700 font-medium mb-1 md:mb-2 text-sm">Payment Amount</label>
+                    <div class="relative">
+                      <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+                        ₦
+                      </span>
+                      <input type="number" id="amount" name="amount" min="0.01" max="<%= collection.remainingAmount %>" step="0.01" required
+                             class="w-full pl-8 px-3 py-2 md:py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                    </div>
+                    <p class="text-xs md:text-sm text-gray-500 mt-1">Maximum amount: ₦<%= collection.remainingAmount.toFixed(2) %></p>
+                  </div>
+                  
+                  <div class="mb-3 md:mb-4">
+                    <label for="note" class="block text-gray-700 font-medium mb-1 md:mb-2 text-sm">Note (Optional)</label>
+                    <textarea id="note" name="note" rows="2"
+                              class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"></textarea>
+                  </div>
+                  
+                  <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm md:text-base">
+                    Record Payment
+                  </button>
+                </form>
+              <% } %>
+            </div>
+            
+            <!-- Payment History -->
+            <div class="bg-white rounded-lg md:rounded-xl shadow border border-gray-200 p-4 md:p-6">
+              <h2 class="text-lg md:text-xl font-bold text-blue-800 mb-3 md:mb-4">Payment History</h2>
+              
+              <% if (collection.paymentHistory.length === 0) { %>
+                <div class="text-center py-4">
+                  <i class="fas fa-receipt text-gray-300 text-3xl mb-2"></i>
+                  <p class="text-gray-500 text-sm">No payments recorded yet.</p>
+                </div>
+              <% } else { %>
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="px-2 md:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                        <th class="px-2 md:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th class="px-2 md:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Collected By</th>
+                        <th class="px-2 md:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Note</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                      <% collection.paymentHistory.forEach(payment => { %>
+                        <tr>
+                          <td class="px-2 md:px-4 py-2 whitespace-nowrap text-xs md:text-sm font-medium text-green-600">
+                            ₦<%= payment.amount.toFixed(2) %>
+                          </td>
+                          <td class="px-2 md:px-4 py-2 whitespace-nowrap text-xs md:text-sm text-gray-500">
+                            <%= new Date(payment.date).toLocaleDateString() %>
+                          </td>
+                          <td class="px-2 md:px-4 py-2 whitespace-nowrap text-xs md:text-sm text-gray-500">
+                            <%= payment.collectedBy %>
+                          </td>
+                          <td class="px-2 md:px-4 py-2 text-xs md:text-sm text-gray-500">
+                            <%= payment.note || '-' %>
+                          </td>
+                        </tr>
+                      <% }) %>
+                    </tbody>
+                  </table>
+                </div>
+              <% } %>
+            </div>
+          </div>
+          
+          <!-- Collection Information -->
+          <div class="bg-white rounded-lg md:rounded-xl shadow border border-gray-200 p-4 md:p-6 mt-4 md:mt-6">
+            <h2 class="text-lg md:text-xl font-bold text-blue-800 mb-3 md:mb-4">Collection Information</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+              <div>
+                <p class="text-xs md:text-sm text-gray-500">Person's Name</p>
+                <p class="font-medium text-sm md:text-base"><%= collection.personName %></p>
+              </div>
+              
+              <div>
+                <p class="text-xs md:text-sm text-gray-500">Status</p>
+                <p>
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                    <% if (collection.status === 'completed') { %>
+                      bg-green-100 text-green-800
+                    <% } else if (collection.status === 'partially paid') { %>
+                      bg-yellow-100 text-yellow-800
+                    <% } else { %>
+                      bg-red-100 text-red-800
+                    <% } %>
+                  ">
+                    <%= collection.status %>
+                  </span>
+                </p>
+              </div>
+              
+              <div>
+                <p class="text-xs md:text-sm text-gray-500">Created By</p>
+                <p class="font-medium text-sm md:text-base"><%= collection.createdBy %></p>
+              </div>
+              
+              <div>
+                <p class="text-xs md:text-sm text-gray-500">Created Date</p>
+                <p class="font-medium text-sm md:text-base"><%= new Date(collection.createdAt).toLocaleDateString() %></p>
+              </div>
+              
+              <% if (collection.description) { %>
+                <div class="md:col-span-2">
+                  <p class="text-xs md:text-sm text-gray-500">Description</p>
+                  <p class="font-medium text-sm md:text-base"><%= collection.description %></p>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="bg-gray-100 p-3 md:p-4 border-t-2 border-gray-200 text-center">
+        <p class="text-gray-600 text-xs md:text-sm"><i class="fas fa-school mr-1"></i>   Collection Management</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar Script -->
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const openBtn = document.getElementById('openSidebar');
+    const closeBtn = document.getElementById('closeSidebar');
+    const overlay = document.getElementById('overlay');
+
+    openBtn.addEventListener('click', () => {
+      sidebar.classList.remove('-translate-x-full');
+      overlay.classList.remove('hidden');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>

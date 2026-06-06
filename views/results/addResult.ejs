@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Add Result -  </title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+    /* Custom scrollbar for sidebar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+    body {
+      font-family: 'Comic Neue', serif;
+      background-color: #f0f9ff;
+    }
+    
+    .school-header {
+      font-family: 'Comic Neue';
+    }
+    
+    .rainbow-text {
+      background: linear-gradient(to right, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3);
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: rainbow 3s linear infinite;
+      background-size: 400% 100%;
+    }
+    
+    @keyframes rainbow { 
+      0% {background-position:0% 50%} 
+      100% {background-position:100% 50%} 
+    }
+    
+    .sidebar {
+      width: 250px;
+    }
+    
+    .class-selector {
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+    }
+
+    .score-input { 
+      width: 50px !important;
+      padding: 0.25rem !important;
+      font-size: 12px !important;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 375px) {
+      .sidebar {
+        width: 100%;
+      }
+      .search-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .student-info-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .psychomotor-grid {
+        grid-template-columns: 1fr !important;
+      }
+      table {
+        font-size: 0.6rem !important;
+      }
+      table th, table td {
+        padding: 0.15rem !important;
+      }
+      .text-xs {
+        font-size: 0.6rem !important;
+      }
+      .sidebar-nav a {
+        padding: 0.5rem !important;
+      }
+      .header-title {
+        font-size: 0.8rem !important;
+      }
+      .student-photo {
+        width: 40px !important;
+        height: 40px !important;
+      }
+      .result-table-container {
+        overflow-x: auto;
+        width: 100%;
+        -webkit-overflow-scrolling: touch;
+      }
+      .result-table {
+        min-width: 600px;
+      }
+      .score-input {
+        width: 40px !important;
+      }
+      body {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-100">
+
+  <div class="flex flex-col h-screen overflow-hidden">
+
+    <!-- Mobile Header -->
+    <div class="md:hidden bg-gradient-to-r from-blue-500 to-purple-600 p-2 text-white flex justify-between items-center">
+      <h1 class="text-sm font-bold flex items-center header-title">
+        <i class="fas fa-graduation-cap mr-1"></i>
+        <span class="rainbow-text">Add Student Results</span>
+      </h1>
+      <button id="openSidebar" class="text-white">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <div class="flex flex-1 overflow-hidden">
+      <!-- Sidebar -->
+      <aside style="overflow-y: scroll;" id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-blue-600 to-purple-700 text-white p-6 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center space-x-3">
+            <i class="fas fa-school text-2xl"></i>
+            <span class="text-xl font-bold">  Dashboard</span>
+          </div>
+          <button id="closeSidebar" class="md:hidden text-white text-2xl">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+            <nav class="space-y-1 flex-1 overflow-y-auto sidebar-scroll pb-4">
+        <!-- Dashboard -->
+        <a href="/dashboard" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-home w-5 text-center"></i> <span class="text-sm">Home</span>
+        </a>
+
+        <!-- Students -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Students</p>
+        </div>
+        <a href="/students/biodata" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-id-card w-5 text-center"></i> <span class="text-sm">Student Biodata</span>
+        </a>
+        <a href="/students/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-users w-5 text-center"></i> <span class="text-sm">View Students</span>
+        </a>
+
+        <!-- Teachers (Admins only) -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Teachers</p>
+        </div>
+        <a href="/teachers/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-chalkboard-teacher w-5 text-center"></i> <span class="text-sm">Add Teacher</span>
+        </a>
+        <a href="/teachers/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-user-tie w-5 text-center"></i> <span class="text-sm">View Teachers</span>
+        </a>
+
+        <!-- Subjects -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Subjects</p>
+        </div>
+        <a href="/subjects/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book w-5 text-center"></i> <span class="text-sm">Add Subject</span>
+        </a>
+        <a href="/subjects/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book-open w-5 text-center"></i> <span class="text-sm">View Subjects</span>
+        </a>
+
+        <!-- Results -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Results</p>
+        </div>
+        <a href="/results/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-file-circle-plus w-5 text-center"></i> <span class="text-sm">Add Result</span>
+        </a>
+        <a href="/results/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-list w-5 text-center"></i> <span class="text-sm">View Results</span>
+        </a>
+        <a href="/results/viewClassResult" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-table w-5 text-center"></i> <span class="text-sm">View Class Results</span>
+        </a>
+
+        <!-- Admin Only -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Admin</p>
+        </div>
+        <a href="/admin/sessions" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-calendar-plus w-5 text-center"></i> <span class="text-sm">Add Session</span>
+        </a>
+        <a href="/generate" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-key w-5 text-center"></i> <span class="text-sm">Generate PINs</span>
+        </a>
+        <a href="/pins" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-lock w-5 text-center"></i> <span class="text-sm">Created PINs</span>
+        </a>
+        <a href="/collections/new" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-money-bill-wave w-5 text-center"></i> <span class="text-sm">New Collection</span>
+        </a>
+        <a href="/collections" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-money-check-alt w-5 text-center"></i> <span class="text-sm">View Collections</span>
+        </a>
+        <a href="/promotion" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-graduation-cap w-5 text-center"></i> <span class="text-sm">Bulk Promotion</span>
+        </a>
+        <a href="/admin/school-info" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-school w-5 text-center"></i> <span class="text-sm">School Info</span>
+        </a>
+        <a href="/admin/school-profile" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-user w-5 text-center"></i> <span class="text-sm">School Profile</span>
+        </a>
+      </nav>
+      </aside>
+
+      <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40 md:hidden"></div>
+
+      <div class="flex-1 flex flex-col md:ml-64 overflow-hidden">
+
+        <!-- Desktop Header -->
+        <div class="hidden md:block bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
+          <div class="flex items-center justify-between w-full">
+            <h1 class="text-2xl md:text-3xl font-bold flex items-center">
+              <i class="fas fa-file-signature mr-3"></i>
+              <span class="rainbow-text">Add Student Results</span>
+            </h1>
+          </div>
+          <p class="text-blue-100">  Student Result Management</p>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-6">
+          <div class="mx-auto overflow-hidden">
+            <% if (!student && classLevel && adminNo && sessionId && term) { %>
+              <div class="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">
+                 ⚠️ No student found for AdminNo <%= adminNo %> in class <%= classLevel %>
+              </div>
+            <% } %>
+
+            <% if (student && !subjects.length) { %>
+              <div class="bg-yellow-100 text-yellow-700 p-3 rounded mb-4 text-sm">
+                ️ No subjects found for <%= student.classLevel %>. Please add subjects first.
+              </div>
+            <% } %>
+
+            <div class=" overflow-hidden">
+              <% if (success) { %>
+                <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded text-sm">
+                  ✅ Results saved successfully
+                </div>
+              <% } %>
+
+<!-- In the class selection form -->
+<form method="GET" action="/results/add" class="bg-blue-50 rounded p-4 border border-dashed border-blue-200">
+  <h2 class="text-lg font-bold mb-2 text-blue-800 flex items-center">
+    <i class="fas fa-layer-group mr-2"></i> Step 1 — Select Class
+  </h2>
+  <div class="grid grid-cols-1 gap-2">
+    <div>
+      <label class="block text-gray-700 font-medium mb-1 text-sm">Class:</label>
+      <select name="classLevel" id="classLevelSelect" onchange="toggleStreamField()"
+        class="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-blue-500 text-sm">
+        <option value="">-- Select Class --</option>
+        <% [
+          "Pre-Nursery","Nursery 1","Nursery 2","Nursery 2B","Nursery 3",
+          "Primary 1","Primary 2","Primary 3","Primary 4","Primary 5","Primary 6",
+          "JSS 1","JSS 2","JSS 3", "SS 1", "SS 2", "SS 3"
+        ].forEach(c => { %>
+          <option value="<%= c %>" <%= classLevel===c ? "selected":"" %>><%= c %></option>
+        <% }) %>
+      </select>
+    </div>
+    
+    <!-- Stream selector (only for SS classes) -->
+    <div id="streamWrapper" style="display: none;">
+      <label class="block text-gray-700 font-medium mb-1 text-sm">Stream:</label>
+      <select name="stream" class="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-blue-500 text-sm">
+        <option value="">-- Select Stream --</option>
+        <option value="Science" <%= stream==="Science" ? "selected":"" %>>Science</option>
+        <option value="Arts" <%= stream==="Arts" ? "selected":"" %>>Arts</option>
+        <option value="Commercial" <%= stream==="Commercial" ? "selected":"" %>>Commercial</option>
+      </select>
+    </div>
+  </div>
+  
+  <button type="submit" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+    View Students
+  </button>
+</form>
+
+<% if (classLevel && students && students.length) { %>
+  <form method="GET" action="/results/add" class="bg-white rounded p-4 shadow border border-gray-200">
+    <input type="hidden" name="classLevel" value="<%= classLevel %>">
+    <% if (classLevel && (classLevel === "SS 1" || classLevel === "SS 2" || classLevel === "SS 3")) { %>
+      <input type="hidden" name="stream" value="<%= stream %>">
+    <% } %>
+
+    <h2 class="text-lg font-bold mb-2 text-gray-800 flex items-center">
+      <i class="fas fa-user-check mr-2"></i> Step 2 — Select Student & Period
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div>
+        <label class="block text-gray-700 font-medium mb-1 text-sm">Admin No:</label>
+        <select name="adminNo" required class="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-blue-500 text-sm">
+          <option value="">-- Select Admin No --</option>
+          <% students.forEach(st => { %>
+            <option value="<%= st.adminNo %>" <%= adminNo===st.adminNo ? "selected":"" %>>
+              <%= st.adminNo %> — <%= st.fullName %>
+              <% if (st.stream) { %> (<%= st.stream %>) <% } %>
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+<div>
+                      <label class="block text-gray-700 font-medium mb-1 text-sm">Session:</label>
+                      <select name="sessionId" required class="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-blue-500 text-sm">
+                        <option value="">-- Select Session --</option>
+                        <% sessions.forEach(s => { %>
+                          <option value="<%= s._id %>" <%= String(sessionId)===String(s._id) ? "selected":"" %>>
+                            <%= s.name %>
+                          </option>
+                        <% }) %>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label class="block text-gray-700 font-medium mb-1 text-sm">Term:</label>
+                      <select name="term" required class="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-blue-500 text-sm">
+                        <option value="First Term"  <%= term==="First Term"  ? "selected":"" %>>First Term</option>
+                        <option value="Second Term" <%= term==="Second Term" ? "selected":"" %>>Second Term</option>
+                        <option value="Third Term"  <%= term==="Third Term"  ? "selected":"" %>>Third Term</option>
+                      </select>
+                    </div>
+
+                    <div class="flex items-end">
+                      <button type="submit" class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+                        Search
+                      </button>
+                    </div>
+                  </div>
+    </div>
+  </form>
+<% } %>
+
+              <% if (student && subjects && subjects.length) { %>
+                <div class="bg-white rounded p-4 shadow border border-gray-200">
+                  <h2 class="text-lg font-bold mb-2 text-gray-800 flex items-center">
+                    <i class="fas fa-info-circle mr-2"></i> Student Info
+                  </h2>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
+                    <div><span class="font-semibold">Name:</span> <%= student.fullName %></div>
+                    <div><span class="font-semibold">Admin No:</span> <%= student.adminNo %></div>
+                    <div><span class="font-semibold">Class:</span> <%= student.classLevel %></div>
+                          <% if (student.stream) { %>
+                            <div><span class="font-semibold">Stream:</span> <%= student.stream %></div>
+                          <% } %>
+                  </div>
+
+                  <h2 class="text-lg font-bold mb-2 text-gray-800 flex items-center">
+                    <i class="fas fa-list-ol mr-2"></i> Enter Scores
+                  </h2>
+
+                  <form method="POST" action="/results/save">
+                    <input type="hidden" name="studentId" value="<%= student._id %>">
+                    <input type="hidden" name="classLevel" value="<%= classLevel %>">
+                    <input type="hidden" name="sessionId" value="<%= sessionId %>">
+                    <input type="hidden" name="term" value="<%= term %>">
+
+                    <div class="overflow-x-auto">
+                      <table class="min-w-full border text-sm">
+                        <thead class="bg-blue-500 text-white">
+                          <tr>
+                            <th class="px-3 py-2 text-left">Subject</th>
+                            <th class="px-3 py-2 text-left">1st CA</th>
+                            <th class="px-3 py-2 text-left">2nd CA</th>
+                            <th class="px-3 py-2 text-left">Exam</th>
+                            <th class="px-3 py-2 text-left">Grade</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% subjects.forEach((sub, idx) => { %>
+                            <tr class="border-b">
+                              <td class="px-3 py-2"><%= sub.name %></td>
+                              <td class="px-3 py-2">
+                                <input type="number" name="firstCA_<%= idx %>" min="0" max="40"
+                                       class="score-input px-2 py-1 border rounded"
+                                       data-idx="<%= idx %>" value="<%= sub.firstCA %>">
+                              </td>
+                              <td class="px-3 py-2">
+                                <input type="number" name="secondCA_<%= idx %>" min="0" max="40"
+                                       class="score-input px-2 py-1 border rounded"
+                                       data-idx="<%= idx %>" value="<%= sub.secondCA %>">
+                              </td>
+                              <td class="px-3 py-2">
+                                <input type="number" name="exam_<%= idx %>" min="0" max="60"
+                                       class="score-input px-2 py-1 border rounded"
+                                       data-idx="<%= idx %>" value="<%= sub.exam %>">
+                              </td>
+                              <td class="px-3 py-2">
+                                <input type="text" name="grade_<%= idx %>" id="grade_<%= idx %>"
+                                       readonly class="w-16 px-2 py-1 border rounded bg-gray-100 text-sm">
+                              </td>
+                            </tr>
+                          <% }) %>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div class="mt-6 bg-blue-50 p-4 rounded border border-blue-200">
+                      <h3 class="text-md font-bold text-blue-800 mb-2 flex items-center">
+                        <i class="fas fa-child mr-2"></i> Psychomotor / Affective Traits
+                      </h3>
+                      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+                        <% [
+                          "punctuality","independency","physicalHealth","classroomBehaviour","homework",
+                          "selfControl","relationship","spokenEnglish","schoolProperty","creativity",
+                          "attentiveness","emotionalStability","cleanliness","gamesSports"
+                        ].forEach(field => { %>
+                          <div>
+                            <label class="block text-gray-700 font-medium mb-1 text-sm capitalize"><%= field %></label>
+                            <select name="<%=field%>" class="w-full px-3 py-2 border rounded text-sm">
+                              <option value="1" <%= extras?.psychomotor?.[field] == "1" ? "selected" : "" %>>1 - Weak</option>
+                              <option value="2" <%= extras?.psychomotor?.[field] == "2" ? "selected" : "" %>>2 - Fair</option>
+                              <option value="3" <%= extras?.psychomotor?.[field] == "3" ? "selected" : "" %>>3 - Good</option>
+                              <option value="4" <%= extras?.psychomotor?.[field] == "4" ? "selected" : "" %>>4 - Very Good</option>
+                              <option value="5" <%= extras?.psychomotor?.[field] == "5" ? "selected" : "" %>>5 - Excellent</option>
+                            </select>
+                          </div>
+                        <% }) %>
+                      </div>
+                    </div>
+
+                    <div class="mt-6 bg-green-50 p-4 rounded border border-green-200">
+                      <h3 class="text-md font-bold text-green-800 mb-2 flex items-center">
+                        <i class="fas fa-calendar-check mr-2"></i> Attendance
+                      </h3>
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <label class="block text-gray-700 font-medium mb-1 text-sm">Days Present</label>
+                          <input type="number" name="daysPresent"
+                                 class="w-full px-3 py-2 border rounded"
+                                 placeholder="e.g. 65"
+                                 value="<%= extras?.daysPresent || '' %>">
+                        </div>
+                        <div>
+                          <label class="block text-gray-700 font-medium mb-1 text-sm">Days Absent</label>
+                          <input type="number" name="daysAbsent"
+                                 class="w-full px-3 py-2 border rounded"
+                                 placeholder="e.g. 5"
+                                 value="<%= extras?.daysAbsent || '' %>">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="mt-6 bg-purple-50 p-4 rounded border border-purple-200">
+                      <h3 class="text-md font-bold text-purple-800 mb-2 flex items-center">
+                        <i class="fas fa-comment-dots mr-2"></i> Remarks
+                      </h3>
+                      <div class="grid grid-cols-1 gap-4 text-sm">
+                        <div>
+                          <label class="block text-gray-700 font-medium mb-1 text-sm">General Conduct</label>
+                          <textarea name="generalConduct" rows="2"
+                                    class="w-full px-3 py-2 border rounded text-sm"
+                                    placeholder="e.g. Good performance overall"><%= extras?.generalConduct || '' %></textarea>
+                        </div>
+                        <div>
+                          <label class="block text-gray-700 font-medium mb-1 text-sm">Form Teacher Remark</label>
+                          <select name="formTeacherRemark" id="formTeacherRemark"
+                                  class="w-full px-3 py-2 border rounded text-sm">
+                            <option value="">-- Select Remark --</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label class="block text-gray-700 font-medium mb-1 text-sm">Principal Remark</label>
+                          <textarea name="principalRemark" rows="2"
+                                    class="w-full px-3 py-2 border rounded text-sm"
+                                    placeholder="e.g. Excellent progress, keep it up"><%= extras?.principalRemark || '' %></textarea>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="mt-6">
+                      <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 text-sm">
+                        Save Results
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              <% } %>
+            </div>
+          </div>
+
+          <div class="bg-gray-100 p-4 border-t border-gray-200 text-center text-sm">
+            <p class="text-gray-600">
+              <i class="fas fa-chalkboard-teacher mr-1"></i>   Student Management System
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>
+  function toggleStreamField() {
+    const classLevel = document.getElementById('classLevelSelect').value;
+    const streamWrapper = document.getElementById('streamWrapper');
+    
+    if (classLevel === "SS 1" || classLevel === "SS 2" || classLevel === "SS 3") {
+      streamWrapper.style.display = 'block';
+    } else {
+      streamWrapper.style.display = 'none';
+    }
+  }
+  
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    toggleStreamField();
+  });
+</script>
+  <script>
+    // Auto-grade calculation
+    document.querySelectorAll(".score-input").forEach(input => {
+      input.addEventListener("input", () => {
+        const idx = input.dataset.idx;
+        const firstCA = parseFloat(document.querySelector(`[name="firstCA_${idx}"]`).value) || 0;
+        const secondCA = parseFloat(document.querySelector(`[name="secondCA_${idx}"]`).value) || 0;
+        const exam = parseFloat(document.querySelector(`[name="exam_${idx}"]`).value) || 0;
+        const total = firstCA + secondCA + exam;
+
+        let grade = "";
+        if (total >= 70) grade = "A";
+        else if (total >= 60) grade = "B";
+        else if (total >= 50) grade = "C";
+        else if (total >= 45) grade = "D";
+        else if (total >= 40) grade = "E";
+        else grade = "F";
+
+        document.getElementById(`grade_${idx}`).value = grade;
+      });
+    });
+
+    function updateOverallRemark() {
+      const rows = document.querySelectorAll(".score-input[data-idx]");
+      let totalScore = 0, subjectCount = 0;
+
+      const seen = new Set();
+      rows.forEach(input => {
+        const idx = input.dataset.idx;
+        if (seen.has(idx)) return;
+        seen.add(idx);
+
+        const firstCA = parseFloat(document.querySelector(`[name="firstCA_${idx}"]`).value) || 0;
+        const secondCA = parseFloat(document.querySelector(`[name="secondCA_${idx}"]`).value) || 0;
+        const exam = parseFloat(document.querySelector(`[name="exam_${idx}"]`).value) || 0;
+
+        const total = firstCA + secondCA + exam;
+        totalScore += total;
+        subjectCount++;
+      });
+
+      if (subjectCount === 0) return;
+
+      const average = totalScore / subjectCount;
+
+      let remark = "";
+      if (average >= 70) { 
+        remark = "Excellent performance"; 
+        updateTeacherRemarks("A"); 
+      }
+      else if (average >= 60) { 
+        remark = "Very good performance"; 
+        updateTeacherRemarks("B"); 
+      }
+      else if (average >= 50) { 
+        remark = "Good performance"; 
+        updateTeacherRemarks("C"); 
+      }
+      else if (average >= 45) { 
+        remark = "Fair performance"; 
+        updateTeacherRemarks("D"); 
+      }
+      else if (average >= 40) { 
+        remark = "Weak performance"; 
+        updateTeacherRemarks("E"); 
+      }
+      else { 
+        remark = "Poor performance"; 
+        updateTeacherRemarks("F"); 
+      }
+
+      document.querySelector('[name="generalConduct"]').value = remark;
+    }
+
+    document.querySelectorAll(".score-input").forEach(input => {
+      input.addEventListener("input", () => {
+        const idx = input.dataset.idx;
+        const firstCA = parseFloat(document.querySelector(`[name="firstCA_${idx}"]`).value) || 0;
+        const secondCA = parseFloat(document.querySelector(`[name="secondCA_${idx}"]`).value) || 0;
+        const exam = parseFloat(document.querySelector(`[name="exam_${idx}"]`).value) || 0;
+        const total = firstCA + secondCA + exam;
+
+        let grade = "";
+        if (total >= 70) grade = "A";
+        else if (total >= 60) grade = "B";
+        else if (total >= 50) grade = "C";
+        else if (total >= 45) grade = "D";
+        else if (total >= 40) grade = "E";
+        else grade = "F";
+
+        document.getElementById(`grade_${idx}`).value = grade;
+        updateOverallRemark();
+      });
+    });
+
+    const remarkOptions = {
+      A: [
+        "Excellent work, keep it up!",
+        "Outstanding performance throughout the term.",
+        "Brilliant result, well done.",
+        "Consistently excellent, a role model to peers.",
+        "Exceptional progress, maintain this high standard.",
+        "Remarkable achievement, shows great dedication.",
+        "Your hard work has clearly paid off—congratulations!",
+        "Excellent grasp of concepts, very impressive.",
+        "Consistently delivers quality work—keep soaring.",
+        "Excellent academic record, continue with this commitment."
+      ],
+      B: [
+        "Very good effort, keep striving for excellence.",
+        "Strong performance, aim even higher next time.",
+        "Commendable result, you are on the right track.",
+        "Good work, with more consistency you'll reach the top.",
+        "Shows great promise, push a little harder for excellence.",
+        "Hardworking student, needs just a bit more focus.",
+        "A very good term, keep working towards excellence.",
+        "Demonstrates a positive attitude to learning.",
+        "Consistent improvement is noted—keep progressing.",
+        "Very good performance, continue to give your best."
+      ],
+      C: [
+        "Fair performance, but there is room for improvement.",
+        "Satisfactory work, you must stay more focused.",
+        "Good effort, but more consistency is required.",
+        "Shows potential—needs greater dedication to excel.",
+        "Average result, with steady practice you can do better.",
+        "You can achieve more with better concentration.",
+        "Acceptable performance, but must raise the standard.",
+        "Needs more determination to reach a higher level.",
+        "Capable student—just needs to believe and push harder.",
+        "Average work; better effort will lead to better results."
+      ],
+      D: [
+        "Just a pass, more effort is needed.",
+        "Below average, work harder next term.",
+        "Needs to show more concentration in studies.",
+        "Barely satisfactory, must improve significantly.",
+        "Effort is minimal—strive for better results.",
+        "Performance is weak, needs more commitment.",
+        "Passing is not enough—aim higher.",
+        "Can do better if study habits improve.",
+        "Shows some effort, but not consistent.",
+        "A pass, but you must take studies more seriously."
+      ],
+      E: [
+        "Weak result, you must work much harder.",
+        "Poor performance, double your efforts next term.",
+        "Serious improvement is urgently required.",
+        "Below expectation, you need stronger commitment.",
+        "Learning attitude must change to achieve success.",
+        "Weak understanding of subjects—needs focused attention.",
+        "Must develop a consistent study routine.",
+        "Below average effort, stronger dedication is needed.",
+        "Shows little progress, must put in more effort.",
+        "Weak performance—requires immediate correction."
+      ],
+      F: [
+        "Very poor performance, maximum effort is needed.",
+        "Failure is not encouraging—you must turn things around.",
+        "Needs urgent attention and complete dedication to improve.",
+        "Strong determination and consistent study are required.",
+        "A disappointing result—serious commitment is essential.",
+        "Shows lack of seriousness—must change attitude.",
+        "Needs maximum parental and teacher support.",
+        "Poor performance, must seek help and work harder.",
+        "Failure is unacceptable—strive for a fresh start.",
+        "Urgent and serious improvement is compulsory."
+      ]
+    };
+
+    function updateTeacherRemarks(grade) {
+      const formSelect = document.getElementById("formTeacherRemark");
+      formSelect.innerHTML = '<option value="">-- Select Remark --</option>';
+
+      if (remarkOptions[grade]) {
+        remarkOptions[grade].forEach(r => {
+          const opt = document.createElement("option");
+          opt.value = r;
+          opt.textContent = r;
+          formSelect.appendChild(opt);
+        });
+      }
+    }
+
+    // Sidebar toggle functionality
+    const sidebar = document.getElementById('sidebar');
+    const openBtn = document.getElementById('openSidebar');
+    const closeBtn = document.getElementById('closeSidebar');
+    const overlay = document.getElementById('overlay');
+
+    openBtn.addEventListener('click', () => {
+      sidebar.classList.remove('-translate-x-full');
+      overlay.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+
+    closeBtn.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    });
+  </script>
+</body>
+</html>

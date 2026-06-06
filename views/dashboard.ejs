@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+    body {
+      font-family: 'Comic Neue', cursive;
+      background-color: #f0f9ff;
+    }
+    .rainbow-text {
+      background: linear-gradient(to right, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rainbow 3s linear infinite;
+      background-size: 400% 100%;
+    }
+    @keyframes rainbow {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-100">
+
+  <div class="flex h-screen overflow-hidden">
+
+    <!-- Sidebar -->
+<aside id="sidebar" style="overflow-y:scroll ;" class="fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-blue-600 to-purple-700 text-white p-6 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center space-x-3">
+      <i class="fas fa-school text-2xl"></i>
+      <span class="text-xl font-bold">  Dashboard</span>
+    </div>
+    <button id="closeSidebar" class="md:hidden text-white text-2xl">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+            <nav class="space-y-1 flex-1 overflow-y-auto sidebar-scroll pb-4">
+        <!-- Dashboard -->
+        <a href="/dashboard" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-home w-5 text-center"></i> <span class="text-sm">Home</span>
+        </a>
+
+        <!-- Students -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Students</p>
+        </div>
+        <a href="/students/biodata" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-id-card w-5 text-center"></i> <span class="text-sm">Student Biodata</span>
+        </a>
+        <a href="/students/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-users w-5 text-center"></i> <span class="text-sm">View Students</span>
+        </a>
+
+        <!-- Teachers (Admins only) -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Teachers</p>
+        </div>
+        <a href="/teachers/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-chalkboard-teacher w-5 text-center"></i> <span class="text-sm">Add Teacher</span>
+        </a>
+        <a href="/teachers/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-user-tie w-5 text-center"></i> <span class="text-sm">View Teachers</span>
+        </a>
+
+        <!-- Subjects -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Subjects</p>
+        </div>
+        <a href="/subjects/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book w-5 text-center"></i> <span class="text-sm">Add Subject</span>
+        </a>
+        <a href="/subjects/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book-open w-5 text-center"></i> <span class="text-sm">View Subjects</span>
+        </a>
+
+        <!-- Results -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Results</p>
+        </div>
+        <a href="/results/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-file-circle-plus w-5 text-center"></i> <span class="text-sm">Add Result</span>
+        </a>
+        <a href="/results/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-list w-5 text-center"></i> <span class="text-sm">View Results</span>
+        </a>
+        <a href="/results/viewClassResult" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-table w-5 text-center"></i> <span class="text-sm">View Class Results</span>
+        </a>
+
+        <!-- Admin Only -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Admin</p>
+        </div>
+        <a href="/admin/sessions" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-calendar-plus w-5 text-center"></i> <span class="text-sm">Add Session</span>
+        </a>
+        <a href="/generate" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-key w-5 text-center"></i> <span class="text-sm">Generate PINs</span>
+        </a>
+        <a href="/pins" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-lock w-5 text-center"></i> <span class="text-sm">Created PINs</span>
+        </a>
+        <a href="/collections/new" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-money-bill-wave w-5 text-center"></i> <span class="text-sm">New Collection</span>
+        </a>
+        <a href="/collections" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-money-check-alt w-5 text-center"></i> <span class="text-sm">View Collections</span>
+        </a>
+        <a href="/promotion" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-graduation-cap w-5 text-center"></i> <span class="text-sm">Bulk Promotion</span>
+        </a>
+        <a href="/admin/school-info" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-school w-5 text-center"></i> <span class="text-sm">School Info</span>
+        </a>
+        <a href="/admin/school-profile" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-user w-5 text-center"></i> <span class="text-sm">School Profile</span>
+        </a>
+      </nav>
+
+</aside>
+
+    <!-- Overlay for mobile -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40 md:hidden"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col md:ml-64">
+
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <!-- Hamburger menu for mobile -->
+
+          <h1 class="text-2xl md:text-3xl font-bold flex items-center">
+            <i class="fas fa-school mr-3"></i>
+            <span class="rainbow-text"> </span>
+          </h1>
+
+        </div>
+                            <button id="openSidebar" class="md:hidden text-2xl">
+            <i class="fas fa-bars"></i>
+          </button>
+        <p class="hidden md:block text-blue-100">
+          Welcome, <%= user.fullName %> 👋
+        </p>
+      </div>
+
+      <!-- Dashboard Cards -->
+      <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto">
+        <!-- Students Section -->
+        <a href="/students/biodata" class="bg-blue-50 border-2 border-dashed border-blue-200 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+          <i class="fas fa-user-plus text-4xl text-blue-600 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-700">Add Student</h2>
+        </a>
+
+        <a href="/students/view" class="bg-green-50 border-2 border-dashed border-green-200 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+          <i class="fas fa-users text-4xl text-green-600 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-700">View Students</h2>
+        </a>
+
+        <!-- Teachers Section -->
+        <a href="/teachers/add" class="bg-purple-50 border-2 border-dashed border-purple-200 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+          <i class="fas fa-chalkboard-teacher text-4xl text-purple-600 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-700">Add Teacher</h2>
+        </a>
+
+        <a href="/teachers/view" class="bg-indigo-50 border-2 border-dashed border-indigo-200 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+          <i class="fas fa-user-tie text-4xl text-indigo-600 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-700">View Teachers</h2>
+        </a>
+
+        <!-- Subjects Section -->
+        <a href="/subjects/add" class="bg-yellow-50 border-2 border-dashed border-yellow-200 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+          <i class="fas fa-book text-4xl text-yellow-600 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-700">Add Subject</h2>
+        </a>
+
+        <a href="/subjects/view" class="bg-amber-50 border-2 border-dashed border-amber-200 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+          <i class="fas fa-book-open text-4xl text-amber-600 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-700">View Subjects</h2>
+        </a>
+
+        <!-- Results Section -->
+        <a href="/results/add" class="bg-red-50 border-2 border-dashed border-red-200 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+          <i class="fas fa-file-circle-plus text-4xl text-red-600 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-700">Add Result</h2>
+        </a>
+
+        <a href="/results/view" class="bg-rose-50 border-2 border-dashed border-rose-200 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+          <i class="fas fa-list text-4xl text-rose-600 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-700">View Results</h2>
+        </a>
+
+        <a href="/results/viewClassResult" class="bg-pink-50 border-2 border-dashed border-pink-200 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+          <i class="fas fa-table text-4xl text-pink-600 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-700">View Class Results</h2>
+        </a>
+
+        <!-- Admin Only Section -->
+        <% if (user.role === "admin") { %>
+        <a href="/admin/sessions" class="bg-teal-50 border-2 border-dashed border-teal-200 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+          <i class="fas fa-calendar-plus text-4xl text-teal-600 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-700">Add Session</h2>
+        </a>
+
+        <a href="/generate" class="bg-green-50 border-2 border-dashed border-green-200 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+          <i class="fas fa-key text-4xl text-green-600 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-700">Generate PINs</h2>
+        </a>
+
+        <a href="/pins" class="bg-blue-50 border-2 border-dashed border-blue-200 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+          <i class="fas fa-lock text-4xl text-blue-600 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-700">Created PINs</h2>
+        </a>
+
+        <a href="/collections/new" class="bg-emerald-50 border-2 border-dashed border-emerald-200 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+          <i class="fas fa-money-bill-wave text-4xl text-emerald-600 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-700">New Collection</h2>
+        </a>
+
+        <a href="/collections" class="bg-cyan-50 border-2 border-dashed border-cyan-200 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+          <i class="fas fa-money-check-alt text-4xl text-cyan-600 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-700">View Collections</h2>
+        </a>
+
+        <a href="/promotion" class="bg-violet-50 border-2 border-dashed border-violet-200 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+          <i class="fas fa-graduation-cap text-4xl text-violet-600 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-700">Bulk Promotion</h2>
+        </a>
+
+        <a href="/admin/school-info" class="bg-sky-50 border-2 border-dashed border-sky-200 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+          <i class="fas fa-school text-4xl text-sky-600 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-700">School Info</h2>
+        </a>
+
+        <a href="/admin/school-profile" class="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition">
+          <i class="fas fa-user text-4xl text-slate-600 mb-4"></i>
+          <h2 class="text-xl font-bold text-gray-700">School Profile</h2>
+        </a>
+        <% } %>
+      </div>
+
+      <!-- Footer -->
+      <div class="bg-gray-100 p-4 border-t-2 border-gray-200 text-center text-gray-600 text-sm">
+        <i class="fas fa-chalkboard-teacher mr-1"></i>
+          Management System
+      </div>
+    </div>
+  </div>
+
+  <!-- JS for Sidebar Toggle -->
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const openBtn = document.getElementById('openSidebar');
+    const closeBtn = document.getElementById('closeSidebar');
+    const overlay = document.getElementById('overlay');
+
+    openBtn.addEventListener('click', () => {
+      sidebar.classList.remove('-translate-x-full');
+      overlay.classList.remove('hidden');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>View Student Result - Asmau Ahmad Makarfi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+    
+    body {
+      font-family: 'Comic Neue', serif;
+      background-color: #f0f9ff;
+    }
+      .text-base {
+          font-size: 0.8rem !important;
+          line-height: 1.2rem !important;
+      }
+    .school-header {
+      font-family: 'Comic Neue';
+    }
+    
+    .rainbow-text {
+      background: linear-gradient(to right, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3);
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: rainbow 3s linear infinite;
+      background-size: 400% 100%;
+    }
+    
+    @keyframes rainbow { 
+      0% {background-position:0% 50%} 
+      100% {background-position:100% 50%} 
+    }
+    
+    .sidebar {
+      width: 250px;
+    }
+    
+    .class-selector {
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+    }
+
+    /* Print-specific styles */
+    @media print {
+      body, html {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+        font-size: 14pt !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      
+      .student-result {
+        page-break-before: always !important;
+        page-break-after: always !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 5mm !important;
+        box-shadow: none !important;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .student-result:first-child {
+        page-break-before: auto !important;
+      }
+      
+      .student-result:last-child {
+        page-break-after: auto !important;
+      }
+      
+      .student-result > * {
+        page-break-inside: avoid !important;
+      }
+      
+      table, tr, td, th {
+        page-break-inside: avoid !important;
+        font-size: 10pt !important;
+      }
+      
+      .school-header, .student-info-grid {
+        break-inside: avoid;
+      }
+      
+      .student-result > div {
+        margin-bottom: 2mm;
+      }
+      
+      .result-table-container {
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      
+      .psychomotor-grid {
+        max-height: none !important;
+        overflow: visible !important;
+      }
+    }
+
+    @media (max-width: 375px) {
+      .sidebar {
+        width: 100%;
+      }
+      .search-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .student-info-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .psychomotor-grid {
+        grid-template-columns: 1fr !important;
+      }
+      table {
+        font-size: 0.6rem !important;
+      }
+      table th, table td {
+        padding: 0.15rem !important;
+      }
+      .text-xs {
+        font-size: 0.6rem !important;
+      }
+      .sidebar-nav a {
+        padding: 0.5rem !important;
+      }
+      .header-title {
+        font-size: 0.8rem !important;
+      }
+      .student-photo {
+        width: 40px !important;
+        height: 40px !important;
+      }
+      .result-table-container {
+        overflow-x: auto;
+        width: 100%;
+        -webkit-overflow-scrolling: touch;
+      }
+      .result-table {
+        min-width: 600px;
+      }
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body class="min-h-screen bg-gray-100">
+
+  <div class="flex flex-col h-screen overflow-hidden">
+
+    <!-- Mobile Header -->
+    <div class="md:hidden bg-gradient-to-r from-blue-500 to-purple-600 p-2 text-white flex justify-between items-center no-print">
+      <h1 class="text-sm font-bold flex items-center header-title">
+        <i class="fas fa-graduation-cap mr-1"></i>
+        <span class="rainbow-text">View Student Result</span>
+      </h1>
+      <button id="openSidebar" class="text-white">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <div class="flex flex-1 overflow-hidden">
+      <!-- Sidebar -->
+      <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-blue-600 to-purple-700 text-white p-6 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-50 no-print">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center space-x-3">
+            <i class="fas fa-school text-2xl"></i>
+            <span class="text-xl font-bold">AAM Dashboard</span>
+          </div>
+          <button id="closeSidebar" class="md:hidden text-white text-2xl">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+<nav class="space-y-3">
+  <!-- Dashboard -->
+  <a href="/dashboard" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+    <i class="fas fa-home"></i> <span>Home</span>
+  </a>
+
+  <!-- Students -->
+  <a href="/students/biodata" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+    <i class="fas fa-id-card"></i> <span>Student Biodata</span>
+  </a>
+  <a href="/students/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+    <i class="fas fa-users"></i> <span>View Students</span>
+  </a>
+
+  <!-- Teachers (Admins only) -->
+
+    <a href="/teachers/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+      <i class="fas fa-chalkboard-teacher"></i> <span>Add Teacher</span>
+    </a>
+
+  <a href="/teachers/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+    <i class="fas fa-user-tie"></i> <span>View Teachers</span>
+  </a>
+
+  <!-- Subjects -->
+  <a href="/subjects/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+    <i class="fas fa-book"></i> <span>Add Subject</span>
+  </a>
+  <a href="/subjects/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+    <i class="fas fa-book-open"></i> <span>View Subjects</span>
+  </a>
+
+  <!-- Results -->
+  <a href="/results/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+    <i class="fas fa-file-circle-plus"></i> <span>Add Result</span>
+  </a>
+  <a href="/results/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+    <i class="fas fa-list"></i> <span>View Results</span>
+  </a>
+  <a href="/results/viewClassResult" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+    <i class="fas fa-table"></i> <span>View Class Results</span>
+  </a>
+
+  <!-- Admin Only -->
+
+    <a href="/admin/sessions" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+      <i class="fas fa-calendar-plus"></i> <span>Add Session</span>
+    </a>
+    <a href="/generate" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+      <i class="fas fa-key"></i> <span>Generate PINs</span>
+    </a>
+
+        <a href="/pins" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+      <i class="fas fa-lock"></i> <span>Created PINs</span>
+    </a>
+
+</nav>
+      </aside>
+
+      <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40 md:hidden no-print"></div>
+
+      <div class="flex-1 flex flex-col md:ml-64 overflow-hidden">
+
+        <!-- Desktop Header -->
+        <div class="hidden md:block bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white no-print">
+          <div class="flex items-center justify-between w-full">
+            <h1 class="text-2xl md:text-3xl font-bold flex items-center">
+              <i class="fas fa-graduation-cap mr-3"></i>
+              <span class="rainbow-text">View Student Result</span>
+            </h1>
+          </div>
+          <p class="text-blue-100">Asmau Ahmad Makarfi Student Result Management</p>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-6">
+          <div class=" mx-auto  overflow-hidden " style="margin: 0 !important;">
+            <!-- Search Form -->
+            <form action="/results/view" method="GET" class=" rounded p-4  no-print">
+              <h2 class="text-lg font-bold mb-4 text-blue-800 flex items-center">
+                <i class="fas fa-search mr-2"></i> Search Criteria
+              </h2>
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Class -->
+                <div>
+                  <label class="block text-gray-700 font-medium mb-2">Class:</label>
+                  <select name="classLevel" id="classLevel" 
+                    class="w-full px-4 py-2 rounded border focus:ring-2 focus:ring-blue-500">
+                    <option value="">-- All Classes --</option>
+                    <% [
+                      "Pre-Nursery","Nursery 1","Nursery 2","Nursery 3",
+                      "Primary 1","Primary 2","Primary 3","Primary 4","Primary 5","Primary 6",
+                      "JSS 1","JSS 2","JSS 3","SS 1", "SS 2","SS 3"
+                    ].forEach(c => { %>
+                      <option value="<%= c %>" <%= classLevel===c ? "selected":"" %>><%= c %></option>
+                    <% }) %>
+                  </select>
+                </div>
+
+<% if (students.length) { %>
+  <div>
+    <label class="block text-gray-700 font-medium mb-2">Admin No:</label>
+    <select name="adminNo" id="adminNo" 
+      class="w-full px-4 py-2 rounded border focus:ring-2 focus:ring-blue-500">
+      <option value="">-- Select Student --</option>
+      <% students.forEach(st => { %>
+        <option value="<%= st.adminNo %>" <%= adminNo===st.adminNo ? "selected":"" %>>
+          <%= st.adminNo %> — <%= st.fullName %>
+        </option>
+      <% }) %>
+    </select>
+  </div>
+<% } %>
+
+
+
+                <div>
+                  <label class="block text-gray-700 font-medium mb-2">Session:</label>
+                  <select name="sessionId" required 
+                    class="w-full px-4 py-2 rounded border focus:ring-2 focus:ring-blue-500">
+                    <option value="">-- Select Session --</option>
+                    <% sessions.forEach(s => { %>
+                      <option value="<%= s._id %>" <%= String(sessionId)===String(s._id) ? "selected":"" %>>
+                        <%= s.name %>
+                      </option>
+                    <% }) %>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-gray-700 font-medium mb-2">Term:</label>
+                  <select name="term" required 
+                    class="w-full px-4 py-2 rounded border focus:ring-2 focus:ring-blue-500">
+                    <option value="First Term"  <%= term==="First Term"  ? "selected":"" %>>First Term</option>
+                    <option value="Second Term" <%= term==="Second Term" ? "selected":"" %>>Second Term</option>
+                    <option value="Third Term"  <%= term==="Third Term"  ? "selected":"" %>>Third Term</option>
+                  </select>
+                </div>
+
+                <div class="md:col-span-4 text-right">
+                  <button type="submit" 
+                    class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 flex items-center justify-center w-full md:w-auto">
+                    <i class="fas fa-search mr-2"></i> Search
+                  </button>
+                </div>
+              </div>
+            </form>
+<!-- Add this after the search form -->
+<% if (classLevel && (classLevel === "SS 1" || classLevel === "SS 2" || classLevel === "SS 3")) { %>
+<div class="bg-yellow-50 p-4 rounded border border-yellow-200 mb-4 no-print">
+  <h3 class="font-bold text-yellow-800 mb-2">Position Calculation Method</h3>
+  <div class="flex items-center space-x-4">
+    <label class="flex items-center">
+      <input type="radio" name="calculateByStream" value="false" 
+        <%= calculateByStream !== "true" ? "checked" : "" %>
+        onchange="updateCalculationMethod(this.value)" class="mr-2">
+      Calculate position across all students
+    </label>
+    <label class="flex items-center">
+      <input type="radio" name="calculateByStream" value="true" 
+        <%= calculateByStream === "true" ? "checked" : "" %>
+        onchange="updateCalculationMethod(this.value)" class="mr-2">
+      Calculate position by stream (Science/Arts/Commercial)
+    </label>
+  </div>
+</div>
+<% } %>
+
+<!-- Add this JavaScript function -->
+<script>
+  function updateCalculationMethod(value) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('calculateByStream', value);
+    window.location.href = url.toString();
+  }
+</script>
+<!-- Add this right after the search form closing </form> tag -->
+<div class="flex justify-between items-center mt-1 mb-1 no-print">
+  <h2 class="text-lg font-bold text-blue-800 flex items-center">
+    <i class="fas fa-file-pdf mr-2"></i> Results
+  </h2>
+  <button onclick="downloadPDF()" 
+    class="px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700 flex items-center">
+    <i class="fas fa-download mr-2"></i> Download PDF
+  </button>
+</div>
+
+            <!-- Result Container (unchanged as requested) -->
+            <div id="result-container" style="text-transform: uppercase !important;">
+              <% if (student && results.length) { %>
+                <!-- Single Student Result -->
+                <div class="student-result">
+<div class="text-center border-b-4 border-gray-600 pb-1 school-header">
+  <div class="flex flex-col md:flex-row justify-center items-center gap-6">
+    <!-- Logo (BIGGER) -->
+<img src="<%= schoolProfile.logoUrl %>" alt="School Logo"
+class="h-52 rounded-lg shadow-md">
+
+    <!-- School Info (ALL CENTERED) -->
+    <div class="text-center">
+      <h1 class="text-4xl md:text-5xl font-bold uppercase tracking-wide text-blue-800">
+        <%= schoolProfile ? schoolProfile.name : '' %>
+      </h1>
+      <p class="text-lg md:text-xl mt-1 font-medium text-gray-700">
+    <%= schoolProfile ? schoolProfile.address : 'No. 8 School Road, Abakwa Kaduna, Nigeria' %>
+      </p>
+      <p class="text-lg md:text-xl mt-1 font-medium text-gray-700">
+         Tel: <% if (schoolProfile && schoolProfile.phoneNumbers && schoolProfile.phoneNumbers.length > 0) { %>
+        <% schoolProfile.phoneNumbers.forEach(function(phone, index) { %>
+        <%= phone %><% if (index < schoolProfile.phoneNumbers.length - 1) { %>, <% } %>
+        <% }) %>
+        <% } else { %>
+        +234 8067816564, +234 7062818133
+        <% } %>
+      </p>
+      <p class="text-lg md:text-xl mt-1 italic font-semibold text-blue-700">
+        Motto: <%= schoolProfile ? schoolProfile.motto : 'Striving for Excellence' %>
+      </p>
+    </div>
+  </div>
+
+  <!-- Report Title -->
+  <div class="mt-1 border-t-4 border-blue-700 pt-1">
+    <h2 class="text-3xl md:text-4xl font-bold uppercase tracking-wider text-blue-900">
+      STUDENT'S REPORT SHEET
+    </h2>
+  </div>
+</div>
+
+
+                  <!-- Student Info -->
+                  <div class="grid student-info-grid grid-cols-1 md:grid-cols-2 gap-4 m-1 p-1 bg-white border-b border-gray-200">
+                    <div class="flex items-center space-x-2">
+                      <img src="<%= student.photoUrl %>" style="border: 3px solid black; width: 120px; height: 150px;" crossorigin="anonymous" alt="Passport" class="border rounded student-photo">
+                      <div class="text-base">
+                        <p><strong>Name:</strong> <%= student.fullName %></p>
+                        <p><strong>Admin No:</strong> <%= student.adminNo %></p>
+                        <p><strong>Gender:</strong> <%= student.gender %></p>
+                        <p><strong>Age:</strong> <%= new Date().getFullYear() - new Date(student.dob).getFullYear() %> years</p>
+                      </div>
+                    </div>
+                    <div class="text-base">
+                      <p><strong>Class:</strong> <%= student.classLevel %></p>
+                        <% if (student.stream) { %>
+    <p><strong>Stream:</strong> <%= student.stream %></p>
+  <% } %>
+                      <p><strong>Term:</strong> <%= term %></p>
+                      <p><strong>Session:</strong> <%= results[0].session.name %></p>
+     
+                        <% if (stats.calculatedByStream) { %>
+                          <span class="text-xs text-blue-600">(within <%= student.stream %> stream)</span>
+                        <% } %>
+                      </p>
+                      <p><strong>Days Present:</strong> <%= stats.daysPresent %></p>
+                      <p><strong>Days Absent:</strong> <%= stats.daysAbsent %></p>
+                    </div>
+                  </div>
+                  
+                  <!-- Results Table -->
+                  <div class="p-1 ">
+                    <div class="result-table-container">
+                      <table class="w-full border text-base result-table">
+                        <thead class="bg-blue-200 text-gray-800">
+                          <tr>
+                            <th class="border px-2 py-1">Subject</th>
+                            <th class="border px-2 py-1">1st CA</th>
+                            <th class="border px-2 py-1">2nd CA</th>
+                            <th class="border px-2 py-1">Exam</th>
+                            <th class="border px-2 py-1">Total</th>
+                            <th class="border px-2 py-1">Grade</th>
+                            <th class="border px-2 py-1">Subj Pos</th>
+                            <th class="border px-2 py-1">Remark</th>
+                            <th class="border px-2 py-1">Class Min</th>
+                            <th class="border px-2 py-1">Class Max</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% results.forEach(r => { %>
+                            <tr class="odd:bg-white even:bg-blue-50">
+                              <td class="border px-2 py-1" style="text-transform: capitalize;"><%= r.subject %></td>
+                              <td class="border px-2 py-1"><%= r.firstCA %></td>
+                              <td class="border px-2 py-1"><%= r.secondCA %></td>
+                              <td class="border px-2 py-1"><%= r.exam %></td>
+                              <td class="border px-2 py-1 font-bold"><%= r.total %></td>
+                              <td class="border px-2 py-1 font-semibold text-blue-700"><%= r.grade %></td>
+                              <td class="border px-2 py-1 text-center"><%= r.subjectPosition %></td>
+                              <td class="border px-2 py-1 italic">
+                                <%= r.subjectRemark %>
+                              </td>
+                              <td class="border px-1 py-1 text-center"><%= r.subjectMin %></td>
+                              <td class="border px-1 py-1 text-center"><%= r.subjectMax %></td>
+                            </tr>
+                          <% }) %>
+                      
+                      <!-- Summary Statistics Row -->
+                      <tr class="bg-gray-100 font-bold">
+                      <td colspan="4" class="border px-2 py-1 text-right">SUMMARY STATISTICS</td>
+                      <td class="border px-2 py-1"><%= stats.totalObtained %> / <%= stats.totalPossible %></td>
+                      <td class="border px-2 py-1"><%= stats.overallGrade %></td>
+            
+                      <td class="border px-2 py-1">Avg: <%= stats.avg %></td>
+                      <td class="border px-2 py-1 text-center"><%= stats.classMin %></td>
+                      <td class="border px-2 py-1 text-center"><%= stats.classMax %></td>
+                      </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  
+                 
+                  
+         
+<% if (stats.psychomotor) { %>
+<div class=" m-1">
+<div class="result-table-container bg-purple-50 rounded border border-purple-200 text-base">
+<h3 class="font-bold text-purple-800 mb-2 text-lg px-2 pt-2">Psychomotor Skills</h3>
+<ul class="grid psychomotor-grid grid-cols-4 gap-2 px-2 pb-2">
+<li><strong>Punctuality:</strong> <%= stats.psychomotor.punctuality || '-' %></li>
+<li><strong>Independency:</strong> <%= stats.psychomotor.independency || '-' %></li>
+<li><strong>Physical Health:</strong> <%= stats.psychomotor.physicalHealth || '-' %></li>
+<li><strong>Classroom Behaviour:</strong> <%= stats.psychomotor.classroomBehaviour || '-' %></li>
+<li><strong>Homework:</strong> <%= stats.psychomotor.homework || '-' %></li>
+<li><strong>Self Control:</strong> <%= stats.psychomotor.selfControl || '-' %></li>
+<li><strong>Relationship:</strong> <%= stats.psychomotor.relationship || '-' %></li>
+<li><strong>Spoken English:</strong> <%= stats.psychomotor.spokenEnglish || '-' %></li>
+<li><strong>Creativity:</strong> <%= stats.psychomotor.creativity || '-' %></li>
+<li><strong>Attentiveness:</strong> <%= stats.psychomotor.attentiveness || '-' %></li>
+<li><strong>Emotional Stability:</strong> <%= stats.psychomotor.emotionalStability || '-' %></li>
+<li><strong>Cleanliness:</strong> <%= stats.psychomotor.cleanliness || '-' %></li>
+<li><strong>Games & Sports:</strong> <%= stats.psychomotor.gamesSports || '-' %></li>
+<li><strong>School Property Handling :</strong> <%= stats.psychomotor.schoolProperty || '-' %></li>
+</ul>
+</div>
+</div>
+<% } %>
+
+                  <div class="p-1 m-1 mt-2 bg-yellow-50 rounded border border-yellow-200 text-base">
+                    <p><strong>General Conduct:</strong> <%= stats.generalConduct %></p>
+                    <p><strong>Form Teacher's Remark:</strong> <%= stats.formTeacherRemark %></p>
+                    <p><strong>Principal's Remark:</strong> <%= stats.principalRemark %></p>
+                  </div>
+                </div>
+              <% } else if (studentResultsList && studentResultsList.length) { %>
+                <!-- Multiple Students Results (Class or School) -->
+                <% studentResultsList.forEach((studentResult, index) => { %>
+                  <div class="student-result <%= index > 0 ? 'page-break' : '' %>">
+<div class="text-center border-b-4 border-gray-600 pb-1 school-header">
+  <div class="flex flex-col md:flex-row justify-center items-center gap-6">
+    <!-- Logo (BIGGER) -->
+        <img src="<%= schoolProfile.logoUrl %>" alt="School Logo"
+        class="h-52 rounded-lg shadow-md">
+
+    <!-- School Info (ALL CENTERED) -->
+    <div class="text-center">
+      <h1 class="text-4xl md:text-5xl font-bold uppercase tracking-wide text-blue-800">
+        <%= schoolProfile ? schoolProfile.name : '' %>
+      </h1>
+      <p class="text-lg md:text-xl mt-1 font-medium text-gray-700">
+<%= schoolProfile ? schoolProfile.address : 'No. 8 School Road, Abakwa Kaduna, Nigeria' %>
+      </p>
+      <p class="text-lg md:text-xl mt-1 font-medium text-gray-700">
+Tel: <% if (schoolProfile && schoolProfile.phoneNumbers && schoolProfile.phoneNumbers.length > 0) { %>
+<% schoolProfile.phoneNumbers.forEach(function(phone, index) { %>
+<%= phone %><% if (index < schoolProfile.phoneNumbers.length - 1) { %>, <% } %>
+<% }) %>
+<% } else { %>
++234 8067816564, +234 7062818133
+<% } %>
+      </p>
+      <p class="text-lg md:text-xl mt-1 italic font-semibold text-blue-700">
+Motto: <%= schoolProfile ? schoolProfile.motto : 'Striving for Excellence' %>
+      </p>
+    </div>
+  </div>
+
+  <!-- Report Title -->
+  <div class="mt-1 border-t-4 border-blue-700 pt-3">
+    <h2 class="text-3xl md:text-4xl font-bold uppercase tracking-wider text-blue-900">
+      STUDENT'S REPORT SHEET
+    </h2>
+  </div>
+</div>
+
+
+                    <!-- Student Info -->
+                    <div class="grid student-info-grid grid-cols-1 md:grid-cols-2 gap-4 m-1 p-1 bg-white border-b border-gray-200">
+                      <div class="flex items-center space-x-2">
+                        <img src="<%= studentResult.student.photoUrl %>" style="border: 3px solid black; width: 120px; height: 150px;" crossorigin="anonymous" alt="Passport" class="border rounded student-photo">
+                        <div class="text-base">
+                          <p><strong>Name:</strong> <%= studentResult.student.fullName %></p>
+                          <p><strong>Admin No:</strong> <%= studentResult.student.adminNo %></p>
+                          <p><strong>Gender:</strong> <%= studentResult.student.gender %></p>
+                          <p><strong>Age:</strong> <%= new Date().getFullYear() - new Date(studentResult.student.dob).getFullYear() %> years</p>
+                        </div>
+                      </div>
+<div class="text-base">
+  <p><strong>Class:</strong> <%= studentResult.student.classLevel %></p>
+  <% if (studentResult.student.stream) { %>
+    <p><strong>Stream:</strong> <%= studentResult.student.stream %></p>
+  <% } %>
+  <p><strong>Term:</strong> <%= term %></p>
+  <p><strong>Session:</strong> <%= studentResult.results[0].session.name %></p>
+
+    <% if (studentResult.stats.calculatedByStream) { %>
+      <span class="text-xs text-blue-600">(within <%= studentResult.student.stream %> stream)</span>
+    <% } %>
+  </p>
+  <p><strong>Days Present:</strong> <%= studentResult.stats.daysPresent %></p>
+  <p><strong>Days Absent:</strong> <%= studentResult.stats.daysAbsent %></p>
+</div>
+                    </div>
+                    
+                    <!-- Results Table -->
+                    <div class="p-1">
+                      <div class="result-table-container">
+                        <table class="w-full border text-base result-table">
+                          <thead class="bg-blue-200 text-gray-800">
+                            <tr>
+                              <th class="border px-2 py-1">Subject</th>
+                              <th class="border px-2 py-1">1st CA</th>
+                              <th class="border px-2 py-1">2nd CA</th>
+                              <th class="border px-2 py-1">Exam</th>
+                              <th class="border px-2 py-1">Total</th>
+                              <th class="border px-2 py-1">Grade</th>
+                              <th class="border px-2 py-1">Subj Pos</th>
+                              <th class="border px-2 py-1">Remark</th>
+                              <th class="border px-2 py-1">Class Min</th>
+                              <th class="border px-2 py-1">Class Max</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <% studentResult.results.forEach(r => { %>
+                              <tr class="odd:bg-white even:bg-blue-50">
+                                <td class="border px-2 py-1" style="text-transform: capitalize;"><%= r.subject %></td>
+                                <td class="border px-2 py-1"><%= r.firstCA %></td>
+                                <td class="border px-2 py-1"><%= r.secondCA %></td>
+                                <td class="border px-2 py-1"><%= r.exam %></td>
+                                <td class="border px-2 py-1 font-bold"><%= r.total %></td>
+                                <td class="border px-2 py-1 font-semibold text-blue-700"><%= r.grade %></td>
+                                <td class="border px-2 py-1 text-center"><%= r.subjectPosition %></td>
+                                <td class="border px-2 py-1 italic">
+                                  <%= r.subjectRemark %>
+                                </td>
+                                <td class="border px-1 py-1 text-center"><%= r.subjectMin %></td>
+                                <td class="border px-1 py-1 text-center"><%= r.subjectMax %></td>
+                              </tr>
+                            <% }) %>
+
+
+                      <!-- Summary Statistics Row -->
+                      <tr class="bg-gray-100 font-bold">
+                      <td colspan="4" class="border px-2 py-1 text-right">SUMMARY STATISTICS</td>
+                      <td class="border px-2 py-1"><%= stats.totalObtained %> / <%= stats.totalPossible %></td>
+                      <td class="border px-2 py-1"><%= stats.overallGrade %></td>
+                      <td class="border px-2 py-1 text-center"><%= stats.position %></td>
+                      <td class="border px-2 py-1">Avg: <%= stats.avg %></td>
+                      <td class="border px-2 py-1 text-center"><%= stats.classMin %></td>
+                      <td class="border px-2 py-1 text-center"><%= stats.classMax %></td>
+                      </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    
+               
+
+<% if (studentResult.stats.psychomotor) { %>
+<div class=" m-1">
+<div class="result-table-container bg-purple-50 rounded border border-purple-200 text-base">
+<h3 class="font-bold text-purple-800 mb-2 text-lg px-2 pt-2">Psychomotor Skills</h3>
+<ul class="grid psychomotor-grid grid-cols-4 gap-2 px-2 pb-2">
+<li><strong>Punctuality:</strong> <%= studentResult.stats.psychomotor.punctuality || '-' %></li>
+<li><strong>Independency:</strong> <%= studentResult.stats.psychomotor.independency || '-' %></li>
+<li><strong>Physical Health:</strong> <%= studentResult.stats.psychomotor.physicalHealth || '-' %></li>
+<li><strong>Classroom Behaviour:</strong> <%= studentResult.stats.psychomotor.classroomBehaviour || '-' %></li>
+<li><strong>Homework:</strong> <%= studentResult.stats.psychomotor.homework || '-' %></li>
+<li><strong>Self Control:</strong> <%= studentResult.stats.psychomotor.selfControl || '-' %></li>
+<li><strong>Relationship:</strong> <%= studentResult.stats.psychomotor.relationship || '-' %></li>
+<li><strong>Spoken English:</strong> <%= studentResult.stats.psychomotor.spokenEnglish || '-' %></li>
+<li><strong>Creativity:</strong> <%= studentResult.stats.psychomotor.creativity || '-' %></li>
+<li><strong>Attentiveness:</strong> <%= studentResult.stats.psychomotor.attentiveness || '-' %></li>
+<li><strong>Emotional Stability:</strong> <%= studentResult.stats.psychomotor.emotionalStability || '-' %></li>
+<li><strong>Cleanliness:</strong> <%= studentResult.stats.psychomotor.cleanliness || '-' %></li>
+<li><strong>Games & Sports:</strong> <%= studentResult.stats.psychomotor.gamesSports || '-' %></li>
+<li><strong>Spoken English:</strong> <%= studentResult.stats.psychomotor.spokenEnglish || '-' %></li>
+<li><strong>School Property Handling :</strong> <%= studentResult.stats.psychomotor.schoolProperty || '-' %></li>
+</ul>
+</div>
+</div>
+<% } %>
+                    <div class="p-1 m-1 mt-2 bg-yellow-50 rounded border border-yellow-200 text-base">
+                      <p><strong>General Conduct:</strong> <%= studentResult.stats.generalConduct %></p>
+                      <p><strong>Form Teacher's Remark:</strong> <%= studentResult.stats.formTeacherRemark %></p>
+                      <p><strong>Principal's Remark:</strong> <%= studentResult.stats.principalRemark %></p>
+                    </div>
+                    <div class="flex justify-end items-center mt-1 px-1">
+                      <!-- Principal -->
+                      <div class="text-center">
+                        <p class="font-semibold">_________________________</p>
+                        <p class="text-sm">Principal's Signature</p>
+                      </div>
+                    </div>
+                  </div>
+                <% }) %>
+              <% } else if (sessionId && term) { %>
+                <div class="p-4 text-center">
+                  <p class="text-gray-500">No results found for the selected criteria.</p>
+                </div>
+              <% } %>
+            </div>
+          </div>
+
+          <div class="bg-gray-100 p-4 border-t border-gray-200 text-center text-sm no-print">
+            <p class="text-gray-600">
+              <i class="fas fa-chalkboard-teacher mr-1"></i> Asmau Ahmad Makarfi Student Management System
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sidebar toggle functionality
+    const sidebar = document.getElementById('sidebar');
+    const openBtn = document.getElementById('openSidebar');
+    const closeBtn = document.getElementById('closeSidebar');
+    const overlay = document.getElementById('overlay');
+
+    openBtn.addEventListener('click', () => {
+      sidebar.classList.remove('-translate-x-full');
+      overlay.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+
+    closeBtn.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    });
+
+// Add this after your existing JavaScript code
+document.addEventListener('DOMContentLoaded', function() {
+  const classSelect = document.getElementById('classLevel');
+  const adminNoSelect = document.getElementById('adminNo');
+  
+  // Store all students in JavaScript
+  const allStudents = <%- JSON.stringify(students) %>;
+  
+  // Function to update admin number dropdown based on selected class
+  function updateAdminNoDropdown() {
+    const selectedClass = classSelect.value;
+    
+    // Clear current options
+    adminNoSelect.innerHTML = '<option value="">-- Select Student --</option>';
+    
+    if (selectedClass) {
+      // Filter students by selected class
+      const filteredStudents = allStudents.filter(student => student.classLevel === selectedClass);
+      
+      // Add filtered students to dropdown
+      filteredStudents.forEach(student => {
+        const option = document.createElement('option');
+        option.value = student.adminNo;
+        option.textContent = `${student.adminNo} — ${student.fullName}`;
+        adminNoSelect.appendChild(option);
+      });
+    } else {
+      // If no class selected, show all students
+      allStudents.forEach(student => {
+        const option = document.createElement('option');
+        option.value = student.adminNo;
+        option.textContent = `${student.adminNo} — ${student.fullName} (${student.classLevel})`;
+        adminNoSelect.appendChild(option);
+      });
+    }
+  }
+  
+  // Update dropdown when class selection changes
+  classSelect.addEventListener('change', updateAdminNoDropdown);
+  
+  // Initialize dropdown on page load
+  updateAdminNoDropdown();
+});
+
+
+           function downloadPDF() {
+          const element = document.getElementById("result-container");
+        
+          // Get student name & session from EJS
+          let studentName = "<%= student ? student.fullName : (studentResultsList && studentResultsList[0] ? studentResultsList[0].student.fullName : 'student') %>";
+          let sessionName = "<%= student ? results[0].session.name : (studentResultsList && studentResultsList[0] ? studentResultsList[0].results[0].session.name : 'session') %>";
+        
+          // Clean invalid filename characters
+          studentName = studentName.replace(/[^a-z0-9]/gi, "_").toUpperCase();
+          sessionName = sessionName.replace(/[^a-z0-9]/gi, "_").toUpperCase();
+        
+          // IMPORTANT: Remove any existing page break styles first
+          const studentResults = element.querySelectorAll('.student-result');
+          studentResults.forEach((result) => {
+            result.style.pageBreakBefore = '';
+            result.style.pageBreakAfter = '';
+            result.style.breakBefore = '';
+            result.style.breakAfter = '';
+          });
+        
+          const opt = {
+            margin: [0.5, 0.5, 0.5, 0.5], // Add small margins
+            filename: studentResults.length > 1 
+              ? `CLASS_RESULTS_${sessionName}.pdf` 
+              : `${studentName}_${sessionName}_RESULT.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
+              scale: 2,
+              useCORS: true,
+              allowTaint: true,
+              logging: true, // Enable logging for debugging
+              letterRendering: true
+            },
+            jsPDF: { 
+              unit: 'mm', 
+              format: 'a4', 
+              orientation: 'portrait' 
+            },
+            pagebreak: { 
+              mode: ['css', 'legacy'],
+              before: '.page-break',
+              after: ['#result-container'],
+              avoid: ['tr', 'img', '.student-result']
+            }
+          };
+        
+          // Add a temporary class for page breaks
+          studentResults.forEach((result, index) => {
+            if (index > 0) {
+              result.classList.add('page-break');
+            }
+          });
+        
+          // Generate and save PDF
+          html2pdf().from(element).set(opt).save().then(() => {
+            // Clean up: remove temporary classes
+            studentResults.forEach((result) => {
+              result.classList.remove('page-break');
+            });
+          });
+        }
+  </script>
+</body>
+</html>

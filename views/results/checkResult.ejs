@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- Force desktop-like viewport regardless of device -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>Check Student Result</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+    
+    /* Custom scrollbar for sidebar */
+    .sidebar-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+    
+    body {
+      font-family: 'Comic Neue', serif;
+      background-color: #f0f9ff;
+      /* Remove fixed width to allow responsive scaling */
+      width: 100%;
+      overflow-x: hidden;
+      /* Prevent horizontal scrollbar */
+      margin: 0;
+      padding: 0;
+    }
+    
+    /* Main container with fixed desktop width */
+    .desktop-container {
+      width: 1366px;
+      min-height: 100vh;
+      margin: 0 auto;
+      transform-origin: top left;
+      overflow: hidden;
+    }
+    
+    .school-header {
+      font-family: 'Comic Neue';
+    }
+    
+    .rainbow-text {
+      background: linear-gradient(to right, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3);
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: rainbow 3s linear infinite;
+      background-size: 400% 100%;
+    }
+    
+    @keyframes rainbow { 
+      0% {background-position:0% 50%} 
+      100% {background-position:100% 50%} 
+    }
+    
+    .sidebar {
+      width: 250px;
+    }
+    
+    .class-selector {
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+    }
+    
+    /* Desktop requirement overlay - now hidden by default */
+    .desktop-requirement-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      z-index: 9999;
+      display: none; /* Changed from flex to none */
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .desktop-requirement-overlay.hidden {
+      display: none !important;
+    }
+    
+    .desktop-requirement-content {
+      max-width: 500px;
+      background-color: #1e40af;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+    
+    .desktop-requirement-content h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #fbbf24;
+    }
+    
+    .desktop-requirement-content p {
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+    
+    .desktop-requirement-content .instructions {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: left;
+    }
+    
+    .desktop-requirement-content .instructions h3 {
+      color: #fbbf24;
+      margin-bottom: 10px;
+    }
+    
+    .desktop-requirement-content .instructions ol {
+      padding-left: 20px;
+    }
+    
+    .desktop-requirement-content .instructions li {
+      margin-bottom: 8px;
+    }
+    
+    .desktop-requirement-content .ok-button {
+      background-color: #fbbf24;
+      color: #1e40af;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: all 0.3s ease;
+    }
+    
+    .desktop-requirement-content .ok-button:hover {
+      background-color: #f59e0b;
+      transform: translateY(-2px);
+    }
+    
+    .desktop-requirement-content .browser-icons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .desktop-requirement-content .browser-icons i {
+      font-size: 30px;
+      color: #fbbf24;
+    }
+    
+    /* Print-specific styles */
+    @media print {
+      body, html {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+        font-size: 14pt !important;
+        transform: none !important; /* Reset transform for printing */
+      }
+      .no-print {
+        display: none !important;
+      }
+      
+      .desktop-container {
+        width: 100% !important;
+        transform: none !important;
+      }
+      
+      .student-result {
+        page-break-before: always !important;
+        page-break-after: always !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 5mm !important;
+        box-shadow: none !important;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .student-result:first-child {
+        page-break-before: auto !important;
+      }
+      
+      .student-result:last-child {
+        page-break-after: auto !important;
+      }
+      
+      .student-result > * {
+        page-break-inside: avoid !important;
+      }
+      
+      table, tr, td, th {
+        page-break-inside: avoid !important;
+        font-size: 12pt !important;
+      }
+      
+      .school-header, .student-info-grid {
+        break-inside: avoid;
+      }
+      
+      .student-result > div {
+        margin-bottom: 2mm;
+      }
+      
+      .result-table-container {
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      
+      .psychomotor-grid {
+        max-height: none !important;
+        overflow: visible !important;
+      }
+      
+      /* Styles for different subject counts */
+      .student-result.subjects-many {
+        padding: 3mm !important;
+      }
+      
+      .student-result.subjects-many .school-header {
+        padding-bottom: 2mm !important;
+      }
+      
+      .student-result.subjects-many .school-header h1 {
+        font-size: 28pt !important;
+        margin-bottom: 1mm !important;
+      }
+      
+      .student-result.subjects-many .school-header p {
+        font-size: 11pt !important;
+        margin: 0.5mm 0 !important;
+      }
+      
+      .student-result.subjects-many .school-header h2 {
+        font-size: 24pt !important;
+        margin-top: 2mm !important;
+        padding-top: 1mm !important;
+      }
+      
+      .student-result.subjects-many .student-info-grid {
+        padding: 2mm !important;
+        margin: 2mm !important;
+      }
+      
+      .student-result.subjects-many .student-photo {
+        width: 80px !important;
+        height: 100px !important;
+      }
+      
+      .student-result.subjects-many .student-info-grid p {
+        margin: 1mm 0 !important;
+        font-size: 11pt !important;
+      }
+      
+      .student-result.subjects-many .result-table-container {
+        margin: 2mm !important;
+        padding: 1mm !important;
+      }
+      
+      .student-result.subjects-many table th,
+      .student-result.subjects-many table td {
+        padding: 1mm !important;
+        font-size: 10pt !important;
+      }
+      
+      .student-result.subjects-many .psychomotor-grid {
+        padding: 2mm !important;
+        margin: 2mm !important;
+      }
+      
+      .student-result.subjects-many .psychomotor-grid h3 {
+        font-size: 14pt !important;
+        margin-bottom: 1mm !important;
+      }
+      
+      .student-result.subjects-many .psychomotor-grid li {
+        font-size: 10pt !important;
+        margin: 0.5mm 0 !important;
+      }
+      
+      .student-result.subjects-many .bg-yellow-50 {
+        padding: 2mm !important;
+        margin: 2mm !important;
+      }
+      
+      .student-result.subjects-many .bg-yellow-50 p {
+        font-size: 10pt !important;
+        margin: 0.5mm 0 !important;
+      }
+      
+      .student-result.subjects-many .flex.justify-end {
+        margin-top: 5mm !important;
+      }
+      
+      /* Even more compressed for very many subjects */
+      .student-result.subjects-very-many {
+        padding: 2mm !important;
+      }
+      
+      .student-result.subjects-very-many .school-header {
+        padding-bottom: 1mm !important;
+      }
+      
+      .student-result.subjects-very-many .school-header h1 {
+        font-size: 24pt !important;
+        margin-bottom: 0.5mm !important;
+      }
+      
+      .student-result.subjects-very-many .school-header p {
+        font-size: 10pt !important;
+        margin: 0.25mm 0 !important;
+      }
+      
+      .student-result.subjects-very-many .school-header h2 {
+        font-size: 20pt !important;
+        margin-top: 1mm !important;
+        padding-top: 0.5mm !important;
+      }
+      
+      .student-result.subjects-very-many .student-info-grid {
+        padding: 1mm !important;
+        margin: 1mm !important;
+      }
+      
+      .student-result.subjects-very-many .student-photo {
+        width: 60px !important;
+        height: 80px !important;
+      }
+      
+      .student-result.subjects-very-many .student-info-grid p {
+        margin: 0.5mm 0 !important;
+        font-size: 10pt !important;
+      }
+      
+      .student-result.subjects-very-many .result-table-container {
+        margin: 1mm !important;
+        padding: 0.5mm !important;
+      }
+      
+      .student-result.subjects-very-many table th,
+      .student-result.subjects-very-many table td {
+        padding: 0.5mm !important;
+        font-size: 9pt !important;
+      }
+      
+      .student-result.subjects-very-many .psychomotor-grid {
+        padding: 1mm !important;
+        margin: 1mm !important;
+      }
+      
+      .student-result.subjects-very-many .psychomotor-grid h3 {
+        font-size: 12pt !important;
+        margin-bottom: 0.5mm !important;
+      }
+      
+      .student-result.subjects-very-many .psychomotor-grid li {
+        font-size: 9pt !important;
+        margin: 0.25mm 0 !important;
+      }
+      
+      .student-result.subjects-very-many .bg-yellow-50 {
+        padding: 1mm !important;
+        margin: 1mm !important;
+      }
+      
+      .student-result.subjects-very-many .bg-yellow-50 p {
+        font-size: 9pt !important;
+        margin: 0.25mm 0 !important;
+      }
+      
+      .student-result.subjects-very-many .flex.justify-end {
+        margin-top: 3mm !important;
+      }
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body class="min-h-screen bg-gray-100">
+
+  <!-- Desktop Site Requirement Overlay - Now hidden by default -->
+  <div id="desktopRequirementOverlay" class="desktop-requirement-overlay hidden">
+    <div class="desktop-requirement-content">
+      <i class="fas fa-desktop fa-3x mb-4"></i>
+      <h2>Desktop Site Required</h2>
+      <p>This page requires desktop site mode to be enabled for proper viewing and PDF generation.</p>
+      <p><strong>Mobile users are welcome!</strong> Just enable desktop site mode in your browser.</p>
+      
+      <div class="instructions">
+        <h3>How to Enable Desktop Site:</h3>
+        <ol>
+          <li><strong>Chrome:</strong> Tap the three dots menu → "Desktop site"</li>
+          <li><strong>Safari:</strong> Tap the "aA" menu → "Request Desktop Website"</li>
+          <li><strong>Firefox:</strong> Tap the three dots menu → "Desktop site"</li>
+          <li><strong>Edge:</strong> Tap the three dots menu → "Desktop site"</li>
+        </ol>
+      </div>
+      
+      <p>After enabling desktop site mode, please refresh this page.</p>
+      
+      <button id="okButton" class="ok-button" onclick="hideOverlay()">
+        <i class="fas fa-check mr-2"></i>OK
+      </button>
+      
+      <div class="browser-icons">
+        <i class="fab fa-chrome"></i>
+        <i class="fab fa-safari"></i>
+        <i class="fab fa-firefox"></i>
+        <i class="fab fa-edge"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Desktop Container -->
+  <div class="desktop-container" id="desktopContainer">
+
+    <div class="flex flex-col h-screen overflow-hidden">
+
+      <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" style="overflow-y: scroll;" class="fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-blue-600 to-purple-700 text-white p-6 transform translate-x-0 transition-transform duration-300 z-50 no-print">
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center space-x-3">
+              <i class="fas fa-school text-2xl"></i>
+              <span class="text-xl font-bold">AHA Result Portal</span>
+            </div>
+          </div>
+
+          <div class="space-y-4 mt-6">
+            <h2 class="text-lg font-bold flex items-center">
+              <i class="fas fa-search mr-2"></i> Check Result
+            </h2>
+
+            <% if (error) { %>
+              <div class="bg-red-100 text-red-700 p-2 rounded mb-3"><%= error %></div>
+            <% } %>
+
+            <form method="POST" action="/check-result" class="space-y-4">
+              <div>
+                <label  class="block text-sm mb-1">Admin Number</label>
+                <input style="color: black;" type="text"  name="adminNo" placeholder="Admin Number"
+                      class="w-full px-4 py-2 rounded border focus:ring-2 focus:ring-blue-500" required />
+              </div>
+
+              <div>
+                <label class="block text-sm mb-1">PIN Code</label>
+                <input style="color: black;" type="text" name="pinCode" placeholder="Enter PIN Code"
+                      class="w-full px-4 py-2 rounded border focus:ring-2 focus:ring-blue-500" required />
+              </div>
+
+              <div>
+                <label class="block text-sm mb-1">Session</label>
+                <select style="color: black;" name="sessionId" class="w-full px-4 py-2 rounded border focus:ring-2 focus:ring-blue-500" required>
+                  <% sessions.forEach(s => { %>
+                    <option value="<%= s._id %>"><%= s.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm mb-1">Term</label>
+                <select style="color: black;" name="term" class="w-full px-4 py-2 rounded border focus:ring-2 focus:ring-blue-500" required>
+                  <option>First Term</option>
+                  <option>Second Term</option>
+                  <option>Third Term</option>
+                </select>
+              </div>
+
+              <button type="submit"
+                class="w-full bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 flex items-center justify-center">
+                <i class="fas fa-search mr-2"></i> Check Result
+              </button>
+            </form>
+          </div>
+        </aside>
+
+        <div class="flex-1 flex flex-col ml-64 overflow-hidden">
+
+          <!-- Header -->
+          <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white no-print">
+            <div class="flex items-center justify-between w-full">
+              <h1 class="text-3xl font-bold flex items-center">
+                <i class="fas fa-graduation-cap mr-3"></i>
+                <span class="rainbow-text">Check Student Result</span>
+              </h1>
+            </div>
+            <p class="text-blue-100">Student Result Portal</p>
+          </div>
+
+          <div class="flex-1 overflow-y-auto p-6">
+            <div class="mx-auto overflow-hidden" style="margin: 0 !important;">
+              <% if (results && results.length) { %>
+                <!-- Add this right after the search form closing </form> tag -->
+                <div class="flex justify-between items-center mt-4 mb-2 no-print">
+                  <h2 class="text-lg font-bold text-blue-800 flex items-center">
+                    <i class="fas fa-file-pdf mr-2"></i> Results
+                  </h2>
+                  <button onclick="downloadPDF()" 
+                    class="px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700 flex items-center">
+                    <i class="fas fa-download mr-2"></i> Download PDF
+                  </button>
+                </div>
+
+                <div id="result-container" style="padding:10px;text-transform: uppercase !important;">
+                  <!-- Single Student Result -->
+                  <div class="student-result" id="student-result-<%= student.adminNo %>">
+                    <div class="text-center border-b-4 border-gray-600 pb-1 school-header">
+                      <div class="flex flex-row justify-center items-center gap-6">
+                        <!-- Logo (BIGGER) -->
+                        <% if (schoolProfile && schoolProfile.logoUrl) { %>
+                        <img src="<%= schoolProfile.logoUrl %>" alt="School Logo"
+                            class="h-52">
+                        <% } else { %>
+                        <img src="/css/logo.png" alt="School Logo"
+                            class="h-52">
+                        <% } %>
+
+                        <!-- School Info (ALL CENTERED) -->
+                        <div class="text-center">
+                          <h1 class="text-5xl font-bold uppercase tracking-wide text-blue-800">
+                            <%= schoolProfile ? schoolProfile.name : '' %>
+                          </h1>
+                          <p class="text-xl mt-1 font-medium text-gray-700">
+                            <%= schoolProfile ? schoolProfile.address : 'No. 8 School Road, Abakwa Kaduna, Nigeria' %>
+                          </p>
+                          <p class="text-xl mt-1 font-medium text-gray-700">
+                            Tel: <% if (schoolProfile && schoolProfile.phoneNumbers && schoolProfile.phoneNumbers.length > 0) { %>
+                            <% schoolProfile.phoneNumbers.forEach(function(phone, index) { %>
+                            <%= phone %><% if (index < schoolProfile.phoneNumbers.length - 1) { %>, <% } %>
+                            <% }) %>
+                            <% } else { %>
+                            +234 8067816564, +234 7062818133
+                            <% } %>
+                          </p>
+                          <p class="text-xl mt-2 italic font-semibold text-blue-700">
+                            Motto: <%= schoolProfile ? schoolProfile.motto : 'Striving for Excellence' %>
+                          </p>
+                        </div>
+                      </div>
+
+                      <!-- Report Title -->
+                      <div class="mt-1 border-t-4 border-blue-700 pt-1">
+                        <h2 class="text-4xl font-bold uppercase tracking-wider text-blue-900">
+                          STUDENT'S REPORT SHEET
+                        </h2>
+                      </div>
+                    </div>
+
+                    <!-- Student Info -->
+                    <div class="grid student-info-grid grid-cols-2 gap-2 m-1 p-2 bg-white border-b border-gray-200">
+                      <div class="flex items-center space-x-4">
+                        <img src="<%= student.photoUrl %>" style="border: 3px solid black; width: 120px; height: 150px;" crossorigin="anonymous" alt="Passport" class="border rounded student-photo">
+                        <div class="text-base">
+                          <p><strong>Name:</strong> <%= student.fullName %></p>
+                          <p><strong>Admin No:</strong> <%= student.adminNo %></p>
+                          <p><strong>Gender:</strong> <%= student.gender %></p>
+                          <p><strong>Age:</strong> <%= new Date().getFullYear() - new Date(student.dob).getFullYear() %> years</p>
+                        </div>
+                      </div>
+                      <div class="text-base">
+                        <p><strong>Class:</strong> <%= student.classLevel %></p>
+                        <% if (student.stream) { %>
+                          <p><strong>Stream:</strong> <%= student.stream %></p>
+                        <% } %>
+                        <p><strong>Term:</strong> <%= term %></p>
+                        <p><strong>Session:</strong> <%= results[0].session.name %></p>
+              
+                        <% if (stats.calculatedByStream) { %>
+                          <span class="text-xs text-blue-600">(within <%= student.stream %> stream)</span>
+                        <% } %>
+                        </p>
+                        <p><strong>Days Present:</strong> <%= stats.daysPresent %></p>
+                        <p><strong>Days Absent:</strong> <%= stats.daysAbsent %></p>
+                      </div>
+                    </div>
+
+                    <!-- Results Table -->
+                    <div class="p-2 m-1">
+                      <div class="result-table-container">
+                        <table class="w-full border text-base result-table">
+                          <thead class="bg-blue-200 text-gray-800">
+                            <tr>
+                              <th class="border px-2 py-1">Subject</th>
+                              <th class="border px-2 py-1">1st CA</th>
+                              <th class="border px-2 py-1">2nd CA</th>
+                              <th class="border px-2 py-1">Exam</th>
+                              <th class="border px-2 py-1">Total</th>
+                              <th class="border px-2 py-1">Grade</th>
+                              <th class="border px-2 py-1">Subj Pos</th>
+                              <th class="border px-2 py-1">Remark</th>
+                              <th class="border px-2 py-1">Class Min</th>
+                              <th class="border px-2 py-1">Class Max</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <% results.forEach(function(r) { %>
+                              <tr class="odd:bg-white even:bg-blue-50">
+                                <td class="border px-2 py-1" style="text-transform: capitalize;"><%= r.subject %></td>
+                                <td class="border px-2 py-1"><%= r.firstCA %></td>
+                                <td class="border px-2 py-1"><%= r.secondCA %></td>
+                                <td class="border px-2 py-1"><%= r.exam %></td>
+                                <td class="border px-2 py-1 font-bold"><%= r.total %></td>
+                                <td class="border px-2 py-1 font-semibold text-blue-700"><%= r.grade %></td>
+                                <td class="border px-2 py-1 text-center"><%= r.subjectPosition %></td>
+                                <td class="border px-2 py-1 italic">
+                                  <%= r.subjectRemark %>
+                                </td>
+                                <td class="border px-2 py-1 text-center"><%= r.subjectMin %></td>
+                                <td class="border px-2 py-1 text-center"><%= r.subjectMax %></td>
+                              </tr>
+                            <% }) %>
+                            <!-- Summary Statistics Row -->
+                            <tr class="bg-gray-100 font-bold">
+                              <td colspan="4" class="border px-2 py-1 text-right">SUMMARY STATISTICS</td>
+                              <td class="border px-2 py-1"><%= stats.totalObtained %> / <%= stats.totalPossible %></td>
+                              <td class="border px-2 py-1"><%= stats.overallGrade %></td>
+                            
+                              <td class="border px-2 py-1">Avg: <%= stats.avg %></td>
+                              <td class="border px-2 py-1 text-center"><%= stats.classMin %></td>
+                              <td class="border px-2 py-1 text-center"><%= stats.classMax %></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <!-- Psychomotor Skills - Updated to match table width -->
+                    <% if (stats.psychomotor) { %>
+                      <div class="p-2 m-1">
+                        <div class="result-table-container bg-purple-50 rounded border border-purple-200 text-base">
+                          <h3 class="font-bold text-purple-800 mb-2 text-lg px-2 pt-2">Psychomotor Skills</h3>
+                          <ul class="grid psychomotor-grid grid-cols-4 gap-2 px-2 pb-2">
+                            <li><strong>Punctuality:</strong> <%= stats.psychomotor.punctuality || '-' %></li>
+                            <li><strong>Independency:</strong> <%= stats.psychomotor.independency || '-' %></li>
+                            <li><strong>Physical Health:</strong> <%= stats.psychomotor.physicalHealth || '-' %></li>
+                            <li><strong>Classroom Behaviour:</strong> <%= stats.psychomotor.classroomBehaviour || '-' %></li>
+                            <li><strong>Homework:</strong> <%= stats.psychomotor.homework || '-' %></li>
+                            <li><strong>Self Control:</strong> <%= stats.psychomotor.selfControl || '-' %></li>
+                            <li><strong>Relationship:</strong> <%= stats.psychomotor.relationship || '-' %></li>
+                            <li><strong>Spoken English:</strong> <%= stats.psychomotor.spokenEnglish || '-' %></li>
+                            <li><strong>Creativity:</strong> <%= stats.psychomotor.creativity || '-' %></li>
+                            <li><strong>Attentiveness:</strong> <%= stats.psychomotor.attentiveness || '-' %></li>
+                            <li><strong>Emotional Stability:</strong> <%= stats.psychomotor.emotionalStability || '-' %></li>
+                            <li><strong>Cleanliness:</strong> <%= stats.psychomotor.cleanliness || '-' %></li>
+                            <li><strong>Games & Sports:</strong> <%= stats.psychomotor.gamesSports || '-' %></li>
+                            <li><strong>School Property Handling :</strong> <%= stats.psychomotor.schoolProperty || '-' %></li>
+                          </ul>
+                        </div>
+                      </div>
+                    <% } %>
+
+                    <!-- General Conduct - Updated to match table width -->
+                    <div class="p-2 m-1">
+                      <div class="result-table-container bg-yellow-50 rounded border border-yellow-200 text-base px-2 py-2">
+                        <p><strong>General Conduct:</strong> <%= stats.generalConduct %></p>
+                        <p><strong>Form Teacher's Remark:</strong> <%= stats.formTeacherRemark %></p>
+                        <p><strong>Principal's Remark:</strong> <%= stats.principalRemark %></p>
+                        <p><strong>Next Term Resumption:</strong> <%= stats.nextTermResumption || 'To be announced' %></p>
+                        <p><strong>Next Term School Fees:</strong> <%= stats.nextTermFees || 'To be announced' %></p>
+                      </div>
+                    </div>
+
+                    <div class="flex justify-end items-center mt-5 px-6">
+                      <!-- Principal -->
+                      <div class="text-center">
+                        <p class="font-semibold"> ----------------------</p>
+                        <p class="text-sm">Principal's Signature</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% } else { %>
+                <div class="max-w-6xl mx-auto bg-white rounded-lg shadow overflow-hidden border border-blue-200 p-6">
+                  <div class="text-center py-10">
+                    <i class="fas fa-file-alt text-5xl text-blue-300 mb-4"></i>
+                    <p class="text-gray-600 text-lg">Enter details in the sidebar to check result.</p>
+                  </div>
+                </div>
+              <% } %>
+            </div>
+
+            <div class="bg-gray-100 p-4 border-t border-gray-200 text-center text-sm no-print">
+              <p class="text-gray-600">
+                <i class="fas fa-chalkboard-teacher mr-1"></i> Student Result Portal
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Force desktop mode on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Hide the desktop requirement overlay
+      document.getElementById('desktopRequirementOverlay').classList.add('hidden');
+      
+      // Function to calculate and apply appropriate scale
+      function applyDesktopScale() {
+        const container = document.getElementById('desktopContainer');
+        const viewportWidth = window.innerWidth;
+        const desktopWidth = 1366; // Fixed desktop width
+        
+        // Calculate scale to fit content within viewport
+        let scale = viewportWidth / desktopWidth;
+        
+        // Limit scale to reasonable values
+        scale = Math.min(scale, 1.0); // Don't scale up beyond 100%
+        scale = Math.max(scale, 0.3); // Don't scale down below 30%
+        
+        // Apply the transformation
+        container.style.transform = `scale(${scale})`;
+        container.style.transformOrigin = 'top left';
+        
+        // Adjust body height to accommodate scaled content
+        const scaledHeight = window.innerHeight / scale;
+        container.style.height = `${scaledHeight}px`;
+        
+        // Store current scale for zoom controls
+        window.currentScale = scale;
+        window.baseScale = scale;
+      }
+      
+      // Initial scale application
+      applyDesktopScale();
+      
+      // Reapply scale on window resize
+      window.addEventListener('resize', applyDesktopScale);
+      
+      // Detect mobile device and add zoom controls
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        // Add a floating button for easy zoom controls on mobile
+        const zoomControls = document.createElement('div');
+        zoomControls.innerHTML = `
+          <div id="zoomControls" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px;">
+            <button id="zoomIn" style="width: 50px; height: 50px; border-radius: 50%; background-color: #3b82f6; color: white; border: none; font-size: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <i class="fas fa-plus"></i>
+            </button>
+            <button id="zoomOut" style="width: 50px; height: 50px; border-radius: 50%; background-color: #3b82f6; color: white; border: none; font-size: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <i class="fas fa-minus"></i>
+            </button>
+            <button id="zoomReset" style="width: 50px; height: 50px; border-radius: 50%; background-color: #10b981; color: white; border: none; font-size: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+              <i class="fas fa-undo"></i>
+            </button>
+          </div>
+        `;
+        document.body.appendChild(zoomControls);
+        
+        // Add zoom functionality
+        const minScale = 0.3;
+        const maxScale = 2.0;
+        const scaleStep = 0.1;
+        
+        document.getElementById('zoomIn').addEventListener('click', function() {
+          if (window.currentScale < maxScale) {
+            window.currentScale += scaleStep;
+            const container = document.getElementById('desktopContainer');
+            container.style.transform = `scale(${window.currentScale})`;
+            const scaledHeight = window.innerHeight / window.currentScale;
+            container.style.height = `${scaledHeight}px`;
+          }
+        });
+        
+        document.getElementById('zoomOut').addEventListener('click', function() {
+          if (window.currentScale > minScale) {
+            window.currentScale -= scaleStep;
+            const container = document.getElementById('desktopContainer');
+            container.style.transform = `scale(${window.currentScale})`;
+            const scaledHeight = window.innerHeight / window.currentScale;
+            container.style.height = `${scaledHeight}px`;
+          }
+        });
+        
+        document.getElementById('zoomReset').addEventListener('click', function() {
+          window.currentScale = window.baseScale;
+          applyDesktopScale();
+        });
+      }
+    });
+
+    // Function to hide overlay
+    function hideOverlay() {
+      document.getElementById('desktopRequirementOverlay').classList.add('hidden');
+    }
+
+    // Alternative method using event listener
+    document.addEventListener('DOMContentLoaded', function() {
+      const okButton = document.getElementById('okButton');
+      if (okButton) {
+        okButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          document.getElementById('desktopRequirementOverlay').style.display = 'none';
+        });
+      }
+    });
+
+    function downloadPDF() {
+      const element = document.getElementById("result-container");
+      const body = document.body;
+      
+      // Store original styles to restore later
+      const originalElementStyle = {
+        width: element.style.width,
+        minWidth: element.style.minWidth,
+        maxWidth: element.style.maxWidth,
+        transform: element.style.transform,
+        overflow: element.style.overflow
+      };
+      const originalBodyOverflow = body.style.overflow;
+      
+      // Apply your screen size styles temporarily
+      element.style.width = '1366px';
+      element.style.minWidth = '1366px';
+      element.style.maxWidth = '1366px';
+      element.style.transform = 'scale(1)';
+      element.style.overflow = 'visible';
+      body.style.overflow = 'visible';
+      
+      // Get student name & session from EJS
+      let studentName = "<%= student ? student.fullName : 'student' %>";
+      let sessionName = "<%= results && results[0] ? results[0].session.name : 'session' %>";
+      
+      // Clean invalid filename characters
+      studentName = studentName.replace(/[^a-z0-9]/gi, "_").toUpperCase();
+      sessionName = sessionName.replace(/[^a-z0-9]/gi, "_").toUpperCase();
+      
+      const opt = {
+        margin: 0,
+        filename: studentName + "_" + sessionName + "_RESULT.pdf",
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true, // Crucial for external images
+          allowTaint: true,
+          scrollX: 0,
+          scrollY: 0,
+          width: 1366, // The width of the element we are capturing
+          height: element.scrollHeight // Capture the full height of the content
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      };
+      
+      // Generate PDF and then restore original styles
+      html2pdf().set(opt).from(element).save().finally(() => {
+        // Restore original styles after PDF generation is complete
+        element.style.width = originalElementStyle.width;
+        element.style.minWidth = originalElementStyle.minWidth;
+        element.style.maxWidth = originalElementStyle.maxWidth;
+        element.style.transform = originalElementStyle.transform;
+        element.style.overflow = originalElementStyle.overflow;
+        body.style.overflow = originalBodyOverflow;
+      });
+    }
+
+    // Adjust styling based on number of subjects
+    document.addEventListener('DOMContentLoaded', function() {
+      const studentResults = document.querySelectorAll('.student-result');
+      studentResults.forEach(function(result) {
+        const table = result.querySelector('.result-table');
+        if (table) {
+          const rows = table.querySelectorAll('tbody tr');
+          const subjectCount = rows.length - 1; // Subtract 1 for the summary row
+
+          // Add appropriate class based on subject count
+          if (subjectCount >= 15) {
+            result.classList.add('subjects-very-many');
+          } else if (subjectCount >= 12) {
+            result.classList.add('subjects-many');
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!-- Single Student Result Card -->
+<div class="p-4 border-b border-gray-200">
+
+  <!-- Student Info -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-2 bg-gray-50 p-2 rounded">
+    <div class="flex items-center space-x-2">
+      <img src="<%= student.photoUrl || '/css/default.png' %>" 
+           alt="Passport" 
+           class="w-12 h-12 rounded border object-cover">
+      <div>
+        <p class="font-semibold"><%= student.fullName %></p>
+        <p class="text-xs text-gray-600">Admin No: <%= student.adminNo %></p>
+        <p class="text-xs text-gray-600">Class: <%= student.classLevel %></p>
+      </div>
+    </div>
+    <div class="text-xs text-gray-600">
+      <p>Session: <%= session %></p>
+      <p>Term: <%= term %></p>
+    </div>
+  </div>
+
+  <!-- Results Table -->
+  <div class="overflow-x-auto mt-3">
+    <table class="w-full border-collapse border text-xs">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="border p-1">Subject</th>
+          <th class="border p-1">CA</th>
+          <th class="border p-1">Exam</th>
+          <th class="border p-1">Total</th>
+          <th class="border p-1">Grade</th>
+          <th class="border p-1">Remark</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% results.forEach(r => { %>
+          <tr>
+            <td class="border p-1 capitalize"><%= r.subject %></td>
+            <td class="border p-1 text-center"><%= r.ca %></td>
+            <td class="border p-1 text-center"><%= r.exam %></td>
+            <td class="border p-1 text-center"><%= r.total %></td>
+            <td class="border p-1 text-center"><%= r.grade %></td>
+            <td class="border p-1"><%= r.remark %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Summary Stats -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3 text-xs">
+    <p><strong>Total:</strong> <%= stats.total %></p>
+    <p><strong>Average:</strong> <%= stats.average %></p>
+    <p><strong>Position:</strong> <%= stats.position %></p>
+    <p><strong>Attendance:</strong> <%= stats.attendance || "N/A" %></p>
+  </div>
+
+</div>

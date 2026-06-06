@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title><%= title %> -  </title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+    body { font-family: 'Comic Neue', cursive; background-color: #f0f9ff; }
+
+    /* Custom scrollbar for sidebar */
+    .sidebar-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+    .rainbow-text {
+      background: linear-gradient(to right, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3);
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: rainbow 3s linear infinite;
+      background-size: 400% 100%;
+    }
+    @keyframes rainbow { 0% {background-position:0% 50%} 100% {background-position:100% 50%} }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-100">
+
+  <div class="flex h-screen overflow-hidden">
+
+<aside id="sidebar" style="overflow-y: scroll;" class="fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-blue-600 to-purple-700 text-white p-6 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center space-x-3">
+      <i class="fas fa-school text-2xl"></i>
+      <span class="text-xl font-bold">  Dashboard</span>
+    </div>
+    <button id="closeSidebar" class="md:hidden text-white text-2xl">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+            <nav class="space-y-1 flex-1 overflow-y-auto sidebar-scroll pb-4">
+        <!-- Dashboard -->
+        <a href="/dashboard" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-home w-5 text-center"></i> <span class="text-sm">Home</span>
+        </a>
+
+        <!-- Students -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Students</p>
+        </div>
+        <a href="/students/biodata" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-id-card w-5 text-center"></i> <span class="text-sm">Student Biodata</span>
+        </a>
+        <a href="/students/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-users w-5 text-center"></i> <span class="text-sm">View Students</span>
+        </a>
+
+        <!-- Teachers (Admins only) -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Teachers</p>
+        </div>
+        <a href="/teachers/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-chalkboard-teacher w-5 text-center"></i> <span class="text-sm">Add Teacher</span>
+        </a>
+        <a href="/teachers/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-user-tie w-5 text-center"></i> <span class="text-sm">View Teachers</span>
+        </a>
+
+        <!-- Subjects -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Subjects</p>
+        </div>
+        <a href="/subjects/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book w-5 text-center"></i> <span class="text-sm">Add Subject</span>
+        </a>
+        <a href="/subjects/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book-open w-5 text-center"></i> <span class="text-sm">View Subjects</span>
+        </a>
+
+        <!-- Results -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Results</p>
+        </div>
+        <a href="/results/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-file-circle-plus w-5 text-center"></i> <span class="text-sm">Add Result</span>
+        </a>
+        <a href="/results/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-list w-5 text-center"></i> <span class="text-sm">View Results</span>
+        </a>
+        <a href="/results/viewClassResult" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-table w-5 text-center"></i> <span class="text-sm">View Class Results</span>
+        </a>
+
+        <!-- Admin Only -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Admin</p>
+        </div>
+        <a href="/admin/sessions" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-calendar-plus w-5 text-center"></i> <span class="text-sm">Add Session</span>
+        </a>
+        <a href="/generate" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-key w-5 text-center"></i> <span class="text-sm">Generate PINs</span>
+        </a>
+        <a href="/pins" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-lock w-5 text-center"></i> <span class="text-sm">Created PINs</span>
+        </a>
+        <a href="/collections/new" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-money-bill-wave w-5 text-center"></i> <span class="text-sm">New Collection</span>
+        </a>
+        <a href="/collections" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-money-check-alt w-5 text-center"></i> <span class="text-sm">View Collections</span>
+        </a>
+        <a href="/promotion" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-graduation-cap w-5 text-center"></i> <span class="text-sm">Bulk Promotion</span>
+        </a>
+        <a href="/admin/school-info" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-school w-5 text-center"></i> <span class="text-sm">School Info</span>
+        </a>
+        <a href="/admin/school-profile" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-user w-5 text-center"></i> <span class="text-sm">School Profile</span>
+        </a>
+      </nav>
+</aside>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40 md:hidden"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col md:ml-64">
+
+      <!-- Navbar -->
+      <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white flex items-center justify-between">
+<div class="flex items-center justify-between w-full">
+  <h1 class="text-2xl md:text-3xl font-bold flex items-center">
+    <i class="fas fa-school mr-3"></i>
+    <span class="rainbow-text"><%= title %></span>
+  </h1>
+  <button id="openSidebar" class="md:hidden text-2xl">
+    <i class="fas fa-bars"></i>
+  </button>
+</div>
+
+        <p class="hidden md:block text-blue-100">Manage School Information</p>
+      </div>
+
+      <!-- Main Page Content -->
+      <div class="flex-1 overflow-y-auto p-6">
+        
+        <% if (typeof successMessage !== "undefined" && successMessage) { %>
+        <!-- Success Modal -->
+        <div id="successModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div class="bg-white rounded-lg shadow-lg p-6 w-96 text-center">
+            <h2 class="text-xl font-semibold mb-4">Success ✅</h2>
+            <p class="mb-6"><%= successMessage %></p>
+            <a href="/admin/school-info" style="text-decoration: none;" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Okay</a>
+          </div>
+        </div>
+        <% } %>
+
+        <div class="">
+          <!-- Flash Messages -->
+          <% if (typeof messages !== "undefined" && messages.error) { %>
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              <%= messages.error %>
+            </div>
+          <% } %>
+          
+          <% if (typeof messages !== "undefined" && messages.success) { %>
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+              <%= messages.success %>
+            </div>
+          <% } %>
+
+          <!-- Form -->
+          <div class="bg-white shadow-md rounded-lg p-6">
+            <form action="<%= schoolInfo ? `/admin/school-info/edit/${schoolInfo._id}` : '/admin/school-info/add' %>" method="POST">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Session and Term fields remain the same -->
+                <div>
+                  <label for="session" class="block text-gray-700 font-medium mb-2">Session *</label>
+                  <select name="session" id="session" required 
+                    class="w-full px-4 py-2 rounded border focus:ring-2 focus:ring-blue-500">
+                    <option value="">-- Select Session --</option>
+                    <% sessions.forEach(s => { %>
+                      <option value="<%= s._id %>" <%= schoolInfo && String(schoolInfo.session._id) === String(s._id) ? "selected" : "" %>>
+                        <%= s.name %>
+                      </option>
+                    <% }) %>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="term" class="block text-gray-700 font-medium mb-2">Term *</label>
+                  <select name="term" id="term" required 
+                    class="w-full px-4 py-2 rounded border focus:ring-2 focus:ring-blue-500">
+                    <option value="">-- Select Term --</option>
+                    <option value="First Term" <%= schoolInfo && schoolInfo.term === "First Term" ? "selected" : "" %>>First Term</option>
+                    <option value="Second Term" <%= schoolInfo && schoolInfo.term === "Second Term" ? "selected" : "" %>>Second Term</option>
+                    <option value="Third Term" <%= schoolInfo && schoolInfo.term === "Third Term" ? "selected" : "" %>>Third Term</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="nextTermResumption" class="block text-gray-700 font-medium mb-2">Next Term Resumption Date *</label>
+                  <input type="date" name="nextTermResumption" id="nextTermResumption" required
+                    value="<%= schoolInfo ? new Date(schoolInfo.nextTermResumption).toISOString().split('T')[0] : '' %>"
+                    class="w-full px-4 py-2 rounded border focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- UPDATED FEE FIELDS -->
+                <div>
+                  <label for="nurseryFees" class="block text-gray-700 font-medium mb-2">Nursery School Fees (₦) *</label>
+                  <input type="number" name="nurseryFees" id="nurseryFees" required min="0" step="0.01"
+                    value="<%= schoolInfo ? schoolInfo.nurseryFees : '' %>"
+                    class="w-full px-4 py-2 rounded border focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                  <label for="primaryFees" class="block text-gray-700 font-medium mb-2">Primary School Fees (₦) *</label>
+                  <input type="number" name="primaryFees" id="primaryFees" required min="0" step="0.01"
+                    value="<%= schoolInfo ? schoolInfo.primaryFees : '' %>"
+                    class="w-full px-4 py-2 rounded border focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                  <label for="juniorSecondaryFees" class="block text-gray-700 font-medium mb-2">Junior Secondary Fees (₦) *</label>
+                  <input type="number" name="juniorSecondaryFees" id="juniorSecondaryFees" required min="0" step="0.01"
+                    value="<%= schoolInfo ? schoolInfo.juniorSecondaryFees : '' %>"
+                    class="w-full px-4 py-2 rounded border focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                  <label for="seniorSecondaryFees" class="block text-gray-700 font-medium mb-2">Senior Secondary Fees (₦) *</label>
+                  <input type="number" name="seniorSecondaryFees" id="seniorSecondaryFees" required min="0" step="0.01"
+                    value="<%= schoolInfo ? schoolInfo.seniorSecondaryFees : '' %>"
+                    class="w-full px-4 py-2 rounded border focus:ring-2 focus:ring-blue-500">
+                </div>
+              </div>
+
+              <!-- Form Actions -->
+              <div class="mt-6 flex justify-end">
+                <a href="/admin/school-info" class="bg-gray-300 text-gray-700 px-4 py-2 rounded mr-2 hover:bg-gray-400">
+                  Cancel
+                </a>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                  <i class="fas fa-save mr-2"></i><%= schoolInfo ? 'Update' : 'Save' %> Information
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="bg-gray-100 p-4 border-t-2 border-gray-200 text-center">
+        <p class="text-gray-600 text-sm"><i class="fas fa-chalkboard-teacher mr-1"></i>   Student Management System</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar Script -->
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const openBtn = document.getElementById('openSidebar');
+    const closeBtn = document.getElementById('closeSidebar');
+    const overlay = document.getElementById('overlay');
+
+    openBtn.addEventListener('click', () => {
+      sidebar.classList.remove('-translate-x-full');
+      overlay.classList.remove('hidden');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>

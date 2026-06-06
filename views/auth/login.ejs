@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login -  </title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+    body { font-family: 'Comic Neue', cursive; background-color: #f0f9ff; }
+    .rainbow-text {
+      background: linear-gradient(to right, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3);
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: rainbow 3s linear infinite;
+      background-size: 400% 100%;
+    }
+    @keyframes rainbow { 
+      0% {background-position:0% 50%} 
+      100% {background-position:100% 50%} 
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+  <div class="max-w-md w-full bg-white rounded-3xl shadow-lg overflow-hidden border-4 border-blue-200">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white text-center">
+      <h1 class="text-3xl font-bold rainbow-text">
+        <i class="fas fa-user-shield mr-2"></i> Login
+      </h1>
+      <p class="text-blue-100 mt-1">Welcome to  </p>
+    </div>
+
+    <!-- Login Form -->
+    <div class="p-6">
+      <% if (message) { %>
+        <p class="text-red-600 mb-4 font-semibold text-center"><%= message %></p>
+      <% } %>
+
+      <form method="POST" action="/login" class="space-y-4">
+        <div>
+          <label class="block text-gray-700 font-medium mb-2">Email / Username:</label>
+          <input type="text" name="email" required 
+            class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-gray-700 font-medium mb-2">Password:</label>
+          <!-- UPDATED PASSWORD FIELD -->
+          <div class="relative">
+            <input type="password" name="password" required 
+              class="w-full px-4 py-2 pr-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700" onclick="togglePassword()">
+              <i id="toggleIcon" class="fas fa-eye-slash"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" 
+          class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200">
+          <i class="fas fa-sign-in-alt mr-2"></i> Login
+        </button>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="bg-gray-100 p-4 border-t-2 border-gray-200 text-center">
+      <p class="text-gray-600 text-sm">
+        <i class="fas fa-chalkboard-teacher mr-1"></i>   Teacher & Admin Login
+      </p>
+    </div>
+  </div>
+
+  <!-- NEW: JavaScript for password visibility toggle -->
+  <script>
+    function togglePassword() {
+      const passwordInput = document.querySelector('input[name="password"]');
+      const toggleIcon = document.getElementById('toggleIcon');
+
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+      }
+    }
+  </script>
+</body>
+</html>

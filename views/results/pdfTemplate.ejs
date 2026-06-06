@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200, initial-scale=1.0">
+<title>Student Result PDF</title>
+<style>
+/* Basic reset and typography */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-size: 12pt;
+    line-height: 1.4;
+}
+
+/* Page layout */
+.page {
+    width: 100%;
+    min-height: 297mm;
+    padding: 10mm;
+    page-break-after: always;
+    position: relative;
+}
+
+.page:last-child {
+    page-break-after: auto;
+}
+
+/* Header styles */
+.header {
+    text-align: center;
+    border-bottom: 3px solid #000;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.school-name {
+    font-size: 24pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.school-address {
+    font-size: 12pt;
+    margin-bottom: 3px;
+}
+
+.school-phone {
+    font-size: 12pt;
+    margin-bottom: 3px;
+}
+
+.school-motto {
+    font-size: 12pt;
+    font-style: italic;
+    margin-bottom: 5px;
+}
+
+.report-title {
+    font-size: 18pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 5px;
+    padding-top: 5px;
+    border-top: 3px solid #000;
+}
+
+/* Student info section */
+.student-info {
+    display: table;
+    width: 100%;
+    border: 1px solid #000;
+    margin-bottom: 10px;
+}
+
+.student-info-row {
+    display: table-row;
+}
+
+.student-info-cell {
+    display: table-cell;
+    padding: 5px;
+    vertical-align: top;
+    width: 50%;
+}
+
+.student-photo {
+    width: 100px;
+    height: 120px;
+    border: 2px solid #000;
+    float: left;
+    margin-right: 10px;
+}
+
+.student-details {
+    float: left;
+}
+
+.student-details p {
+    margin-bottom: 3px;
+    font-size: 11pt;
+}
+
+/* Table styles */
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+.results-table th, 
+.results-table td {
+    border: 1px solid #000;
+    padding: 4px;
+    text-align: left;
+    font-size: 10pt;
+}
+
+.results-table th {
+    background-color: #e6f2ff;
+    font-weight: bold;
+}
+
+.results-table tr:nth-child(even) {
+    background-color: #f5f5f5;
+}
+
+.summary-row {
+    background-color: #e6e6e6 !important;
+    font-weight: bold;
+}
+
+/* Psychomotor skills section */
+.psychomotor-section {
+    border: 1px solid #000;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.section-title {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.psychomotor-grid {
+    display: table;
+    width: 100%;
+}
+
+.psychomotor-row {
+    display: table-row;
+}
+
+.psychomotor-cell {
+    display: table-cell;
+    width: 25%;
+    padding: 3px;
+    font-size: 10pt;
+}
+
+/* General conduct section */
+.conduct-section {
+    border: 1px solid #000;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.conduct-section p {
+    margin-bottom: 3px;
+    font-size: 10pt;
+}
+
+/* Signature section */
+.signature-section {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.signature-line {
+    font-size: 12pt;
+    margin-bottom: 3px;
+}
+
+.signature-label {
+    font-size: 10pt;
+}
+
+/* Utility classes */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.font-bold { font-weight: bold; }
+.uppercase { text-transform: uppercase; }
+.capitalize { text-transform: capitalize; }
+.italic { font-style: italic; }
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Adjustments for different content amounts */
+.compact .school-name {
+    font-size: 20pt;
+}
+
+.compact .report-title {
+    font-size: 16pt;
+}
+
+.compact .student-photo {
+    width: 80px;
+    height: 100px;
+}
+
+.compact .results-table th, 
+.compact .results-table td {
+    padding: 2px;
+    font-size: 9pt;
+}
+
+.compact .psychomotor-cell {
+    font-size: 9pt;
+}
+
+.compact .conduct-section p {
+    font-size: 9pt;
+}
+
+.very-compact .school-name {
+    font-size: 18pt;
+}
+
+.very-compact .report-title {
+    font-size: 14pt;
+}
+
+.very-compact .student-photo {
+    width: 60px;
+    height: 80px;
+}
+
+.very-compact .results-table th, 
+.very-compact .results-table td {
+    padding: 1px;
+    font-size: 8pt;
+}
+
+.very-compact .psychomotor-cell {
+    font-size: 8pt;
+}
+
+.very-compact .conduct-section p {
+    font-size: 8pt;
+}
+</style>
+</head>
+<body>
+<% if (student && results.length) { %>
+<!-- Single Student Result -->
+<div class="page <% if (results.length > 12) { %>very-compact<% } else if (results.length > 8) { %>compact<% } %>">
+<!-- School Header -->
+<div class="header">
+<% if (schoolProfile && schoolProfile.logoUrl) { %>
+<img src="<%= schoolProfile.logoUrl %>" alt="School Logo" style="height: 60px; margin-bottom: 5px;">
+<% } else { %>
+<img src="/css/logo.png" alt="School Logo" style="height: 60px; margin-bottom: 5px;">
+<% } %>
+<div class="school-name"><%= schoolProfile ? schoolProfile.name : '' %></div>
+<div class="school-address"><%= schoolProfile ? schoolProfile.address : 'No. 8 School Road, Abakwa Kaduna, Nigeria' %></div>
+<div class="school-phone">
+Tel: <% if (schoolProfile && schoolProfile.phoneNumbers && schoolProfile.phoneNumbers.length > 0) { %>
+<% schoolProfile.phoneNumbers.forEach(function(phone, index) { %>
+<%= phone %><% if (index < schoolProfile.phoneNumbers.length - 1) { %>, <% } %>
+<% }) %>
+<% } else { %>
++234 8067816564, +234 7062818133
+<% } %>
+</div>
+<div class="school-motto">Motto: <%= schoolProfile ? schoolProfile.motto : 'Striving for Excellence' %></div>
+<div class="report-title">STUDENT'S REPORT SHEET</div>
+</div>
+
+<!-- Student Information -->
+<div class="student-info">
+<div class="student-info-row">
+<div class="student-info-cell">
+<img src="<%= student.photoUrl %>" alt="Passport" class="student-photo">
+<div class="student-details">
+<p><strong>Name:</strong> <%= student.fullName %></p>
+<p><strong>Admin No:</strong> <%= student.adminNo %></p>
+<p><strong>Gender:</strong> <%= student.gender %></p>
+<p><strong>Age:</strong> <%= new Date().getFullYear() - new Date(student.dob).getFullYear() %> years</p>
+</div>
+<div class="clearfix"></div>
+</div>
+<div class="student-info-cell">
+<p><strong>Class:</strong> <%= student.classLevel %></p>
+<% if (student.stream) { %>
+<p><strong>Stream:</strong> <%= student.stream %></p>
+<% } %>
+<p><strong>Term:</strong> <%= term %></p>
+<p><strong>Session:</strong> <%= results[0].session.name %></p>
+<p><strong>Position:</strong> <%= stats.position %>
+<% if (stats.calculatedByStream) { %>
+ (within <%= student.stream %> stream)
+<% } %>
+</p>
+<p><strong>Days Present:</strong> <%= stats.daysPresent %></p>
+<p><strong>Days Absent:</strong> <%= stats.daysAbsent %></p>
+</div>
+</div>
+</div>
+
+<!-- Results Table -->
+<table class="results-table">
+<thead>
+<tr>
+<th>Subject</th>
+<th>1st CA</th>
+<th>2nd CA</th>
+<th>Exam</th>
+<th>Total</th>
+<th>Grade</th>
+<th>Subj Pos</th>
+<th>Remark</th>
+<th>Class Min</th>
+<th>Class Max</th>
+</tr>
+</thead>
+<tbody>
+<% results.forEach(function(r) { %>
+<tr>
+<td class="capitalize"><%= r.subject %></td>
+<td><%= r.firstCA %></td>
+<td><%= r.secondCA %></td>
+<td><%= r.exam %></td>
+<td class="font-bold"><%= r.total %></td>
+<td style="color: #1d4ed8;"><%= r.grade %></td>
+<td class="text-center"><%= r.subjectPosition %></td>
+<td class="italic"><%= r.subjectRemark %></td>
+<td class="text-center"><%= r.subjectMin %></td>
+<td class="text-center"><%= r.subjectMax %></td>
+</tr>
+<% }) %>
+<tr class="summary-row">
+<td colspan="4" class="text-right">SUMMARY STATISTICS</td>
+<td><%= stats.totalObtained %> / <%= stats.totalPossible %></td>
+<td><%= stats.overallGrade %></td>
+<td class="text-center"><%= stats.position %></td>
+<td>Avg: <%= stats.avg %></td>
+<td class="text-center"><%= stats.classMin %></td>
+<td class="text-center"><%= stats.classMax %></td>
+</tr>
+</tbody>
+</table>
+
+<!-- Psychomotor Skills -->
+<% if (stats.psychomotor) { %>
+<div class="psychomotor-section">
+<div class="section-title">Psychomotor Skills</div>
+<div class="psychomotor-grid">
+<div class="psychomotor-row">
+<div class="psychomotor-cell"><strong>Punctuality:</strong> <%= stats.psychomotor.punctuality || '-' %></div>
+<div class="psychomotor-cell"><strong>Independency:</strong> <%= stats.psychomotor.independency || '-' %></div>
+<div class="psychomotor-cell"><strong>Physical Health:</strong> <%= stats.psychomotor.physicalHealth || '-' %></div>
+<div class="psychomotor-cell"><strong>Classroom Behaviour:</strong> <%= stats.psychomotor.classroomBehaviour || '-' %></div>
+</div>
+<div class="psychomotor-row">
+<div class="psychomotor-cell"><strong>Homework:</strong> <%= stats.psychomotor.homework || '-' %></div>
+<div class="psychomotor-cell"><strong>Self Control:</strong> <%= stats.psychomotor.selfControl || '-' %></div>
+<div class="psychomotor-cell"><strong>Relationship:</strong> <%= stats.psychomotor.relationship || '-' %></div>
+<div class="psychomotor-cell"><strong>Spoken English:</strong> <%= stats.psychomotor.spokenEnglish || '-' %></div>
+</div>
+<div class="psychomotor-row">
+<div class="psychomotor-cell"><strong>Creativity:</strong> <%= stats.psychomotor.creativity || '-' %></div>
+<div class="psychomotor-cell"><strong>Attentiveness:</strong> <%= stats.psychomotor.attentiveness || '-' %></div>
+<div class="psychomotor-cell"><strong>Emotional Stability:</strong> <%= stats.psychomotor.emotionalStability || '-' %></div>
+<div class="psychomotor-cell"><strong>Cleanliness:</strong> <%= stats.psychomotor.cleanliness || '-' %></div>
+</div>
+<div class="psychomotor-row">
+<div class="psychomotor-cell"><strong>Games & Sports:</strong> <%= stats.psychomotor.gamesSports || '-' %></div>
+<div class="psychomotor-cell"><strong>School Property:</strong> <%= stats.psychomotor.schoolProperty || '-' %></div>
+<div class="psychomotor-cell">&nbsp;</div>
+<div class="psychomotor-cell">&nbsp;</div>
+</div>
+</div>
+</div>
+<% } %>
+
+<!-- General Conduct -->
+<div class="conduct-section">
+<p><strong>General Conduct:</strong> <%= stats.generalConduct %></p>
+<p><strong>Form Teacher's Remark:</strong> <%= stats.formTeacherRemark %></p>
+<p><strong>Principal's Remark:</strong> <%= stats.principalRemark %></p>
+<p><strong>Next Term Resumption:</strong> <%= stats.nextTermResumption || 'To be announced' %></p>
+<p><strong>Next Term School Fees:</strong> <%= stats.nextTermFees || 'To be announced' %></p>
+</div>
+
+<!-- Signature -->
+<div class="signature-section">
+<div class="signature-line">----------------------</div>
+<div class="signature-label">Principal's Signature</div>
+</div>
+</div>
+<% } else if (studentResultsList && studentResultsList.length) { %>
+<!-- Multiple Students Results (Class or School) -->
+<% studentResultsList.forEach(function(studentResult, index) { %>
+<div class="page <% if (studentResult.results.length > 12) { %>very-compact<% } else if (studentResult.results.length > 8) { %>compact<% } %>">
+<!-- School Header -->
+<div class="header">
+<% if (schoolProfile && schoolProfile.logoUrl) { %>
+<img src="<%= schoolProfile.logoUrl %>" alt="School Logo" style="height: 60px; margin-bottom: 5px;">
+<% } else { %>
+<img src="/css/logo.png" alt="School Logo" style="height: 60px; margin-bottom: 5px;">
+<% } %>
+<div class="school-name"><%= schoolProfile ? schoolProfile.name : '' %></div>
+<div class="school-address"><%= schoolProfile ? schoolProfile.address : 'No. 8 School Road, Abakwa Kaduna, Nigeria' %></div>
+<div class="school-phone">
+Tel: <% if (schoolProfile && schoolProfile.phoneNumbers && schoolProfile.phoneNumbers.length > 0) { %>
+<% schoolProfile.phoneNumbers.forEach(function(phone, index) { %>
+<%= phone %><% if (index < schoolProfile.phoneNumbers.length - 1) { %>, <% } %>
+<% }) %>
+<% } else { %>
++234 8067816564, +234 7062818133
+<% } %>
+</div>
+<div class="school-motto">Motto: <%= schoolProfile ? schoolProfile.motto : 'Striving for Excellence' %></div>
+<div class="report-title">STUDENT'S REPORT SHEET</div>
+</div>
+
+<!-- Student Information -->
+<div class="student-info">
+<div class="student-info-row">
+<div class="student-info-cell">
+<img src="<%= studentResult.student.photoUrl %>" alt="Passport" class="student-photo">
+<div class="student-details">
+<p><strong>Name:</strong> <%= studentResult.student.fullName %></p>
+<p><strong>Admin No:</strong> <%= studentResult.student.adminNo %></p>
+<p><strong>Gender:</strong> <%= studentResult.student.gender %></p>
+<p><strong>Age:</strong> <%= new Date().getFullYear() - new Date(studentResult.student.dob).getFullYear() %> years</p>
+</div>
+<div class="clearfix"></div>
+</div>
+<div class="student-info-cell">
+<p><strong>Class:</strong> <%= studentResult.student.classLevel %></p>
+<% if (studentResult.student.stream) { %>
+<p><strong>Stream:</strong> <%= studentResult.student.stream %></p>
+<% } %>
+<p><strong>Term:</strong> <%= term %></p>
+<p><strong>Session:</strong> <%= studentResult.results[0].session.name %></p>
+<p><strong>Position:</strong> <%= studentResult.stats.position %>
+<% if (studentResult.stats.calculatedByStream) { %>
+ (within <%= studentResult.student.stream %> stream)
+<% } %>
+</p>
+<p><strong>Days Present:</strong> <%= studentResult.stats.daysPresent %></p>
+<p><strong>Days Absent:</strong> <%= studentResult.stats.daysAbsent %></p>
+</div>
+</div>
+</div>
+
+<!-- Results Table -->
+<table class="results-table">
+<thead>
+<tr>
+<th>Subject</th>
+<th>1st CA</th>
+<th>2nd CA</th>
+<th>Exam</th>
+<th>Total</th>
+<th>Grade</th>
+<th>Subj Pos</th>
+<th>Remark</th>
+<th>Class Min</th>
+<th>Class Max</th>
+</tr>
+</thead>
+<tbody>
+<% studentResult.results.forEach(function(r) { %>
+<tr>
+<td class="capitalize"><%= r.subject %></td>
+<td><%= r.firstCA %></td>
+<td><%= r.secondCA %></td>
+<td><%= r.exam %></td>
+<td class="font-bold"><%= r.total %></td>
+<td style="color: #1d4ed8;"><%= r.grade %></td>
+<td class="text-center"><%= r.subjectPosition %></td>
+<td class="italic"><%= r.subjectRemark %></td>
+<td class="text-center"><%= r.subjectMin %></td>
+<td class="text-center"><%= r.subjectMax %></td>
+</tr>
+<% }) %>
+<tr class="summary-row">
+<td colspan="4" class="text-right">SUMMARY STATISTICS</td>
+<td><%= studentResult.stats.totalObtained %> / <%= studentResult.stats.totalPossible %></td>
+<td><%= studentResult.stats.overallGrade %></td>
+<td class="text-center"><%= studentResult.stats.position %></td>
+<td>Avg: <%= studentResult.stats.avg %></td>
+<td class="text-center"><%= studentResult.stats.classMin %></td>
+<td class="text-center"><%= studentResult.stats.classMax %></td>
+</tr>
+</tbody>
+</table>
+
+<!-- Psychomotor Skills -->
+<% if (studentResult.stats.psychomotor) { %>
+<div class="psychomotor-section">
+<div class="section-title">Psychomotor Skills</div>
+<div class="psychomotor-grid">
+<div class="psychomotor-row">
+<div class="psychomotor-cell"><strong>Punctuality:</strong> <%= studentResult.stats.psychomotor.punctuality || '-' %></div>
+<div class="psychomotor-cell"><strong>Independency:</strong> <%= studentResult.stats.psychomotor.independency || '-' %></div>
+<div class="psychomotor-cell"><strong>Physical Health:</strong> <%= studentResult.stats.psychomotor.physicalHealth || '-' %></div>
+<div class="psychomotor-cell"><strong>Classroom Behaviour:</strong> <%= studentResult.stats.psychomotor.classroomBehaviour || '-' %></div>
+</div>
+<div class="psychomotor-row">
+<div class="psychomotor-cell"><strong>Homework:</strong> <%= studentResult.stats.psychomotor.homework || '-' %></div>
+<div class="psychomotor-cell"><strong>Self Control:</strong> <%= studentResult.stats.psychomotor.selfControl || '-' %></div>
+<div class="psychomotor-cell"><strong>Relationship:</strong> <%= studentResult.stats.psychomotor.relationship || '-' %></div>
+<div class="psychomotor-cell"><strong>Spoken English:</strong> <%= studentResult.stats.psychomotor.spokenEnglish || '-' %></div>
+</div>
+<div class="psychomotor-row">
+<div class="psychomotor-cell"><strong>Creativity:</strong> <%= studentResult.stats.psychomotor.creativity || '-' %></div>
+<div class="psychomotor-cell"><strong>Attentiveness:</strong> <%= studentResult.stats.psychomotor.attentiveness || '-' %></div>
+<div class="psychomotor-cell"><strong>Emotional Stability:</strong> <%= studentResult.stats.psychomotor.emotionalStability || '-' %></div>
+<div class="psychomotor-cell"><strong>Cleanliness:</strong> <%= studentResult.stats.psychomotor.cleanliness || '-' %></div>
+</div>
+<div class="psychomotor-row">
+<div class="psychomotor-cell"><strong>Games & Sports:</strong> <%= studentResult.stats.psychomotor.gamesSports || '-' %></div>
+<div class="psychomotor-cell"><strong>School Property:</strong> <%= studentResult.stats.psychomotor.schoolProperty || '-' %></div>
+<div class="psychomotor-cell">&nbsp;</div>
+<div class="psychomotor-cell">&nbsp;</div>
+</div>
+</div>
+</div>
+<% } %>
+
+<!-- General Conduct -->
+<div class="conduct-section">
+<p><strong>General Conduct:</strong> <%= studentResult.stats.generalConduct %></p>
+<p><strong>Form Teacher's Remark:</strong> <%= studentResult.stats.formTeacherRemark %></p>
+<p><strong>Principal's Remark:</strong> <%= studentResult.stats.principalRemark %></p>
+<p><strong>Next Term Resumption:</strong> <%= studentResult.stats.nextTermResumption || 'To be announced' %></p>
+<p><strong>Next Term School Fees:</strong> <%= studentResult.stats.nextTermFees || 'To be announced' %></p>
+</div>
+
+<!-- Signature -->
+<div class="signature-section">
+<div class="signature-line">----------------------</div>
+<div class="signature-label">Principal's Signature</div>
+</div>
+</div>
+<% }) %>
+<% } else if (sessionId && term) { %>
+<div class="page">
+<div class="text-center" style="padding: 50px;">
+<p>No results found for the selected criteria.</p>
+</div>
+</div>
+<% } %>
+</body>
+</html>

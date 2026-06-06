@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Student Viewer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+    body {
+      font-family: 'Comic Neue', cursive;
+      background-color: #f0f9ff;
+    }
+
+    /* Custom scrollbar for sidebar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+    .rainbow-text {
+      background: linear-gradient(to right, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rainbow 3s linear infinite;
+      background-size: 400% 100%;
+    }
+    @keyframes rainbow {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+    .class-selector {
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 0.5rem center;
+    }
+    .student-table tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+    .student-table tr:hover {
+      background-color: #e0f2fe;
+    }
+    
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+      .mobile-padding {
+        padding: 1rem;
+      }
+      .mobile-margin {
+        margin-top: 1rem;
+      }
+      .mobile-text {
+        font-size: 0.875rem;
+      }
+      .mobile-header {
+        padding: 1rem;
+      }
+      .mobile-flex-col {
+        flex-direction: column;
+      }
+      .mobile-w-full {
+        width: 100%;
+      }
+    }
+    
+    /* For very small screens */
+    @media (max-width: 375px) {
+      .xs-text-sm {
+        font-size: 0.8125rem;
+      }
+      .xs-p-2 {
+        padding: 0.5rem;
+      }
+      .xs-px-3 {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+      .xs-py-2 {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex bg-gray-100">
+
+  <!-- Sidebar -->
+<aside id="sidebar" style="overflow-y: scroll;" class="fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-blue-600 to-purple-700 text-white p-6 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="flex  justify-between mb-6">
+    <div class="flex justify-between space-x-3">
+      <i class="fas fa-school text-2xl"></i>
+      <span class="text-xl font-bold">  Dashboard</span>
+    </div>
+    <button id="closeSidebar" class="md:hidden text-white text-2xl">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+            <nav class="space-y-1 flex-1 overflow-y-auto sidebar-scroll pb-4">
+        <!-- Dashboard -->
+        <a href="/dashboard" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-home w-5 text-center"></i> <span class="text-sm">Home</span>
+        </a>
+
+        <!-- Students -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Students</p>
+        </div>
+        <a href="/students/biodata" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-id-card w-5 text-center"></i> <span class="text-sm">Student Biodata</span>
+        </a>
+        <a href="/students/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-users w-5 text-center"></i> <span class="text-sm">View Students</span>
+        </a>
+
+        <!-- Teachers (Admins only) -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Teachers</p>
+        </div>
+        <a href="/teachers/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-chalkboard-teacher w-5 text-center"></i> <span class="text-sm">Add Teacher</span>
+        </a>
+        <a href="/teachers/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-user-tie w-5 text-center"></i> <span class="text-sm">View Teachers</span>
+        </a>
+
+        <!-- Subjects -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Subjects</p>
+        </div>
+        <a href="/subjects/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book w-5 text-center"></i> <span class="text-sm">Add Subject</span>
+        </a>
+        <a href="/subjects/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book-open w-5 text-center"></i> <span class="text-sm">View Subjects</span>
+        </a>
+
+        <!-- Results -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Results</p>
+        </div>
+        <a href="/results/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-file-circle-plus w-5 text-center"></i> <span class="text-sm">Add Result</span>
+        </a>
+        <a href="/results/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-list w-5 text-center"></i> <span class="text-sm">View Results</span>
+        </a>
+        <a href="/results/viewClassResult" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-table w-5 text-center"></i> <span class="text-sm">View Class Results</span>
+        </a>
+
+        <!-- Admin Only -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Admin</p>
+        </div>
+        <a href="/admin/sessions" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-calendar-plus w-5 text-center"></i> <span class="text-sm">Add Session</span>
+        </a>
+        <a href="/generate" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-key w-5 text-center"></i> <span class="text-sm">Generate PINs</span>
+        </a>
+        <a href="/pins" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-lock w-5 text-center"></i> <span class="text-sm">Created PINs</span>
+        </a>
+        <a href="/collections/new" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-money-bill-wave w-5 text-center"></i> <span class="text-sm">New Collection</span>
+        </a>
+        <a href="/collections" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-money-check-alt w-5 text-center"></i> <span class="text-sm">View Collections</span>
+        </a>
+        <a href="/promotion" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-graduation-cap w-5 text-center"></i> <span class="text-sm">Bulk Promotion</span>
+        </a>
+        <a href="/admin/school-info" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-school w-5 text-center"></i> <span class="text-sm">School Info</span>
+        </a>
+        <a href="/admin/school-profile" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-user w-5 text-center"></i> <span class="text-sm">School Profile</span>
+        </a>
+      </nav>
+</aside>
+
+  <!-- Overlay for mobile sidebar -->
+  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40 md:hidden"></div>
+
+  <!-- Main Content -->
+  <div class="flex-1 md:ml-64">
+
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-4 md:p-6 text-white flex items-center justify-between mobile-header">
+      <div class="flex justify-between w-full mobile-flex-col md:flex-row">
+        <div class="flex justify-between mb-2 md:mb-0">
+          <h1 class="text-xl md:text-3xl font-bold flex items-center">
+            <i class="fas fa-users mr-2 md:mr-3"></i>
+            <span class="rainbow-text">View Students</span>
+          </h1>
+          <button id="openSidebar" class="md:hidden text-2xl ml-4">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+        <p class="text-blue-100 text-sm md:text-base mobile-text">Browse & Manage Student Records</p>
+      </div>
+    </div>
+
+    <!-- Content box -->
+    <div class="max-w-6xl mx-auto overflow-hidden mt-4 md:mt-6 mobile-margin mobile-padding">
+      <div class="p-4 md:p-6">
+        <div class="mb-6 md:mb-8  p-4 md:p-6 ">
+          <h2 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-blue-800 flex items-center">
+            <i class="fas fa-child mr-2"></i>
+            View Students by Class
+          </h2>
+          <!-- form -->
+          <form action="/students/view" method="GET" class="flex flex-col md:flex-row gap-3 md:gap-4 items-start md:items-end">
+            <div class="w-full md:w-auto flex-grow">
+              <label for="classLevel" class="block text-sm font-medium text-gray-700 mb-1">Select a class:</label>
+              <select name="classLevel" required class="class-selector w-full px-4 py-2 md:py-3 rounded-xl border-2 border-blue-300 bg-white text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none mobile-text">
+                <option value="">Select Class</option>
+                <option value="Pre-Nursery" <%= selectedClass==="Pre-Nursery"?"selected":"" %>>Pre-Nursery</option>
+                <option value="Nursery 1" <%= selectedClass==="Nursery 1"?"selected":"" %>>Nursery 1</option>
+                <option value="Nursery 2" <%= selectedClass==="Nursery 2"?"selected":"" %>>Nursery 2</option>
+                 <option value="Nursery 2B" <%= selectedClass==="Nursery 2B"?"selected":"" %>>Nursery 2B</option>
+                
+                <option value="Nursery 3" <%= selectedClass==="Nursery 3"?"selected":"" %>>Nursery 3</option>
+                <option value="Primary 1" <%= selectedClass==="Primary 1"?"selected":"" %>>Primary 1</option>
+                <option value="Primary 2" <%= selectedClass==="Primary 2"?"selected":"" %>>Primary 2</option>
+                <option value="Primary 3" <%= selectedClass==="Primary 3"?"selected":"" %>>Primary 3</option>
+                <option value="Primary 4" <%= selectedClass==="Primary 4"?"selected":"" %>>Primary 4</option>
+                <option value="Primary 5" <%= selectedClass==="Primary 5"?"selected":"" %>>Primary 5</option>
+                <option value="Primary 6" <%= selectedClass==="Primary 6"?"selected":"" %>>Primary 6</option>
+                <option value="JSS 1" <%= selectedClass==="JSS 1"?"selected":"" %>>JSS 1</option>
+                <option value="JSS 2" <%= selectedClass==="JSS 2"?"selected":"" %>>JSS 2</option>
+                <option value="JSS 3" <%= selectedClass==="JSS 3"?"selected":"" %>>JSS 3</option>
+                <option value="SS 1" <%= selectedClass==="SS 1"?"selected":"" %>>SS 1</option>
+                <option value="SS 2" <%= selectedClass==="SS 2"?"selected":"" %>>SS 2</option>
+                <option value="SS 3" <%= selectedClass==="SS 3"?"selected":"" %>>SS 3</option>
+              </select>
+            </div>
+            <button type="submit" class="w-full md:w-auto px-4 py-2 md:px-6 md:py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition duration-200 flex items-center justify-center mt-2 md:mt-0 mobile-text">
+              <i class="fas fa-search mr-2"></i>
+              Find Students
+            </button>
+          </form>
+        </div>
+
+        <!-- student table or message -->
+        <% if (students && students.length > 0) { %>
+        <div class="overflow-x-auto rounded-xl border-2 border-blue-200 shadow-sm">
+          <table class="student-table min-w-full divide-y divide-blue-200">
+            <thead class="bg-blue-500 text-white">
+              <tr>
+                <th class="xs-px-3 px-4 md:px-6 xs-py-2 py-2 md:py-3 text-left text-xs font-bold uppercase tracking-wider">#</th>
+                <th class="xs-px-3 px-4 md:px-6 xs-py-2 py-2 md:py-3 text-left text-xs font-bold uppercase tracking-wider">Admin No</th>
+                <th class="xs-px-3 px-4 md:px-6 xs-py-2 py-2 md:py-3 text-left text-xs font-bold uppercase tracking-wider">Full Name</th>
+                <th class="xs-px-3 px-4 md:px-6 xs-py-2 py-2 md:py-3 text-left text-xs font-bold uppercase tracking-wider hidden sm:table-cell">Class</th>
+                <th class="xs-px-3 px-4 md:px-6 xs-py-2 py-2 md:py-3 text-left text-xs font-bold uppercase tracking-wider hidden md:table-cell">Age</th>
+                <th class="xs-px-3 px-4 md:px-6 xs-py-2 py-2 md:py-3 text-left text-xs font-bold uppercase tracking-wider">Parent Phone</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-blue-100">
+              <% students.forEach((student, index) => { %>
+              <tr class="hover:bg-blue-50 transition duration-150">
+                <td class="xs-px-3 px-4 md:px-6 xs-py-2 py-2 md:py-4 whitespace-nowrap text-sm font-medium text-gray-900"><%= index + 1 %></td>
+                <td class="xs-px-3 px-4 md:px-6 xs-py-2 py-2 md:py-4 whitespace-nowrap text-sm text-gray-700">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                    <%= student.adminNo %>
+                  </span>
+                </td>
+                <td class="xs-px-3 px-4 md:px-6 xs-py-2 py-2 md:py-4 whitespace-nowrap text-sm text-gray-700 font-semibold">
+                  <i class="fas fa-user-graduate mr-2 text-blue-500"></i>
+                  <%= student.fullName %>
+                </td>
+                <td class="xs-px-3 px-4 md:px-6 xs-py-2 py-2 md:py-4 whitespace-nowrap text-sm text-gray-700 hidden sm:table-cell">
+                  <span class="px-2 py-1 rounded-full text-xs font-semibold <%= student.classLevel.includes('Nursery') ? 'bg-pink-100 text-pink-800' : student.classLevel.includes('Primary') ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800' %>">
+                    <%= student.classLevel %>
+                  </span>
+                </td>
+                <td class="xs-px-3 px-4 md:px-6 xs-py-2 py-2 md:py-4 whitespace-nowrap text-sm text-gray-700 hidden md:table-cell">
+                  <% const dob = new Date(student.dob); const age = new Date().getFullYear() - dob.getFullYear(); %>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                    <%= age %> years
+                  </span>
+                </td>
+                <td class="xs-px-3 px-4 md:px-6 xs-py-2 py-2 md:py-4 whitespace-nowrap text-sm text-gray-700">
+                  <% if (student.parentPhone) { %>
+                  <a href="tel:<%= student.parentPhone %>" class="text-blue-600 hover:text-blue-800 flex items-center xs-text-sm">
+                    <i class="fas fa-phone-alt mr-1 md:mr-2"></i>
+                    <span class="hidden xs:inline"><%= student.parentPhone %></span>
+                    <span class="xs:hidden">Call</span>
+                  </a>
+                  <% } else { %>
+                  <span class="text-gray-400 xs-text-sm">Not provided</span>
+                  <% } %>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <% } else if (selectedClass) { %>
+        <div class="mt-6 p-4 md:p-6 bg-yellow-50 rounded-xl border-2 border-yellow-200 flex items-start">
+          <div class="mr-3 md:mr-4 text-yellow-500">
+            <i class="fas fa-exclamation-circle text-xl md:text-2xl"></i>
+          </div>
+          <div>
+            <h3 class="text-base md:text-lg font-bold text-yellow-800">No students found</h3>
+            <p class="text-yellow-700 text-sm md:text-base">We couldn't find any students in <strong class="text-yellow-900"><%= selectedClass %></strong>.</p>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="bg-gray-100 p-3 md:p-4 border-t-2 border-gray-200 mt-4 md:mt-6">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-600 text-xs md:text-sm mb-2 md:mb-0 text-center md:text-left">
+          <i class="fas fa-chalkboard-teacher mr-1"></i>
+            Student Management System
+        </p>
+        <div class="flex space-x-3 md:space-x-4">
+          <a href="#" class="text-blue-500 hover:text-blue-700"><i class="fas fa-home"></i></a>
+          <a href="#" class="text-blue-500 hover:text-blue-700"><i class="fas fa-info-circle"></i></a>
+          <a href="#" class="text-blue-500 hover:text-blue-700"><i class="fas fa-envelope"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // sidebar toggle
+    const sidebar = document.getElementById('sidebar');
+    const openSidebar = document.getElementById('openSidebar');
+    const closeSidebar = document.getElementById('closeSidebar');
+    const overlay = document.getElementById('overlay');
+
+    if (openSidebar) {
+      openSidebar.addEventListener('click', () => {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+      });
+    }
+
+    if (closeSidebar) {
+      closeSidebar.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      });
+    }
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    });
+
+    // button hover animation
+    document.addEventListener('DOMContentLoaded', function () {
+      const buttons = document.querySelectorAll('button');
+      buttons.forEach(button => {
+        button.addEventListener('mouseenter', function () {
+          this.classList.add('transform', 'scale-105');
+        });
+        button.addEventListener('mouseleave', function () {
+          this.classList.remove('transform', 'scale-105');
+        });
+      });
+
+      // table row highlight toggle
+      const rows = document.querySelectorAll('.student-table tbody tr');
+      rows.forEach(row => {
+        row.addEventListener('click', function () {
+          this.classList.toggle('bg-blue-100');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>School Information -  </title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+    body { font-family: 'Comic Neue', cursive; background-color: #f0f9ff; }
+
+    /* Custom scrollbar for sidebar */
+    .sidebar-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+    }
+    .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+    .rainbow-text {
+      background: linear-gradient(to right, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3);
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: rainbow 3s linear infinite;
+      background-size: 400% 100%;
+    }
+    @keyframes rainbow { 0% {background-position:0% 50%} 100% {background-position:100% 50%} }
+    
+    /* Card hover effect */
+    .info-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    /* Fee badge styling */
+    .fee-badge {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-100">
+
+  <div class="flex h-screen overflow-hidden">
+
+<aside id="sidebar" style="overflow-y: scroll;" class="fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-blue-600 to-purple-700 text-white p-6 transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-50">
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center space-x-3">
+      <i class="fas fa-school text-2xl"></i>
+      <span class="text-xl font-bold">  Dashboard</span>
+    </div>
+    <button id="closeSidebar" class="md:hidden text-white text-2xl">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+            <nav class="space-y-1 flex-1 overflow-y-auto sidebar-scroll pb-4">
+        <!-- Dashboard -->
+        <a href="/dashboard" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-home w-5 text-center"></i> <span class="text-sm">Home</span>
+        </a>
+
+        <!-- Students -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Students</p>
+        </div>
+        <a href="/students/biodata" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-id-card w-5 text-center"></i> <span class="text-sm">Student Biodata</span>
+        </a>
+        <a href="/students/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-users w-5 text-center"></i> <span class="text-sm">View Students</span>
+        </a>
+
+        <!-- Teachers (Admins only) -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Teachers</p>
+        </div>
+        <a href="/teachers/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-chalkboard-teacher w-5 text-center"></i> <span class="text-sm">Add Teacher</span>
+        </a>
+        <a href="/teachers/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-user-tie w-5 text-center"></i> <span class="text-sm">View Teachers</span>
+        </a>
+
+        <!-- Subjects -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Subjects</p>
+        </div>
+        <a href="/subjects/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book w-5 text-center"></i> <span class="text-sm">Add Subject</span>
+        </a>
+        <a href="/subjects/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-book-open w-5 text-center"></i> <span class="text-sm">View Subjects</span>
+        </a>
+
+        <!-- Results -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Results</p>
+        </div>
+        <a href="/results/add" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-file-circle-plus w-5 text-center"></i> <span class="text-sm">Add Result</span>
+        </a>
+        <a href="/results/view" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-list w-5 text-center"></i> <span class="text-sm">View Results</span>
+        </a>
+        <a href="/results/viewClassResult" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-table w-5 text-center"></i> <span class="text-sm">View Class Results</span>
+        </a>
+
+        <!-- Admin Only -->
+        <div class="pt-2 pb-1">
+          <p class="text-xs uppercase text-blue-200 px-2">Admin</p>
+        </div>
+        <a href="/admin/sessions" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-calendar-plus w-5 text-center"></i> <span class="text-sm">Add Session</span>
+        </a>
+        <a href="/generate" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-key w-5 text-center"></i> <span class="text-sm">Generate PINs</span>
+        </a>
+        <a href="/pins" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-lock w-5 text-center"></i> <span class="text-sm">Created PINs</span>
+        </a>
+        <a href="/collections/new" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-money-bill-wave w-5 text-center"></i> <span class="text-sm">New Collection</span>
+        </a>
+        <a href="/collections" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-money-check-alt w-5 text-center"></i> <span class="text-sm">View Collections</span>
+        </a>
+        <a href="/promotion" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-graduation-cap w-5 text-center"></i> <span class="text-sm">Bulk Promotion</span>
+        </a>
+        <a href="/admin/school-info" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-school w-5 text-center"></i> <span class="text-sm">School Info</span>
+        </a>
+        <a href="/admin/school-profile" class="flex items-center space-x-3 p-2 rounded-lg hover:bg-blue-500 transition">
+          <i class="fas fa-user w-5 text-center"></i> <span class="text-sm">School Profile</span>
+        </a>
+      </nav>
+</aside>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40 md:hidden"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col md:ml-64">
+
+      <!-- Navbar -->
+      <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white flex items-center justify-between">
+<div class="flex items-center justify-between w-full">
+  <h1 class="text-2xl md:text-3xl font-bold flex items-center">
+    <i class="fas fa-school mr-3"></i>
+    <span class="rainbow-text">School Information Management</span>
+  </h1>
+  <button id="openSidebar" class="md:hidden text-2xl">
+    <i class="fas fa-bars"></i>
+  </button>
+</div>
+
+        <p class="hidden md:block text-blue-100">Manage School Information</p>
+      </div>
+
+      <!-- Main Page Content -->
+      <div class="flex-1 overflow-y-auto p-6">
+        
+        <% if (typeof successMessage !== "undefined" && successMessage) { %>
+        <!-- Success Modal -->
+        <div id="successModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div class="bg-white rounded-lg shadow-lg p-6 w-96 text-center">
+            <h2 class="text-xl font-semibold mb-4">Success ✅</h2>
+            <p class="mb-6"><%= successMessage %></p>
+            <a href="/admin/school-info" style="text-decoration: none;" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Okay</a>
+          </div>
+        </div>
+        <% } %>
+
+        <div class="">
+          <!-- Action Buttons -->
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <h2 class="text-xl font-bold text-gray-800">School Information List</h2>
+            <a href="/admin/school-info/add" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 self-start sm:self-auto">
+              <i class="fas fa-plus mr-2"></i>Add New Information
+            </a>
+          </div>
+
+          <!-- School Information Cards -->
+          <% if (schoolInfos.length > 0) { %>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <% schoolInfos.forEach(info => { %>
+                <div class="info-card bg-white rounded-lg shadow-md overflow-hidden">
+                  <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-4 text-white">
+                    <div class="flex justify-between items-center">
+                      <h3 class="text-lg font-bold"><%= info.session.name %></h3>
+                      <span class="bg-white bg-opacity-20 px-2 py-1 rounded text-sm"><%= info.term %></span>
+                    </div>
+                  </div>
+                  <div class="p-4">
+                    <div class="mb-4">
+                      <div class="flex items-center text-gray-600 mb-2">
+                        <i class="fas fa-calendar-alt mr-2 text-blue-500"></i>
+                        <span class="text-sm">Next Term Resumption:</span>
+                      </div>
+                      <p class="text-gray-800 font-medium"><%= new Date(info.nextTermResumption).toLocaleDateString() %></p>
+                    </div>
+                    
+                    <div class="mb-4">
+                      <div class="flex items-center text-gray-600 mb-2">
+                        <i class="fas fa-money-bill-wave mr-2 text-green-500"></i>
+                        <span class="text-sm">Fee Structure:</span>
+                      </div>
+                      <div class="grid grid-cols-2 gap-2">
+                        <div class="fee-badge text-white px-2 py-1 rounded text-xs">
+                          Nursery: ₦<%= info.nurseryFees.toLocaleString() %>
+                        </div>
+                        <div class="fee-badge text-white px-2 py-1 rounded text-xs">
+                          Primary: ₦<%= info.primaryFees.toLocaleString() %>
+                        </div>
+                        <div class="fee-badge text-white px-2 py-1 rounded text-xs">
+                          Jnr. Sec: ₦<%= info.juniorSecondaryFees.toLocaleString() %>
+                        </div>
+                        <div class="fee-badge text-white px-2 py-1 rounded text-xs">
+                          Snr. Sec: ₦<%= info.seniorSecondaryFees.toLocaleString() %>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="flex justify-between pt-4 border-t border-gray-200">
+                      <a href="/admin/school-info/edit/<%= info._id %>" class="text-indigo-600 hover:text-indigo-900 flex items-center">
+                        <i class="fas fa-edit mr-1"></i> Edit
+                      </a>
+                      <form action="/admin/school-info/delete/<%= info._id %>" method="POST" class="inline">
+                        <button type="submit" class="text-red-600 hover:text-red-900 flex items-center" onclick="return confirm('Are you sure you want to delete this information?')">
+                          <i class="fas fa-trash mr-1"></i> Delete
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+          <% } else { %>
+            <div class="bg-white rounded-lg shadow-md p-8 text-center">
+              <i class="fas fa-info-circle text-6xl text-gray-300 mb-4"></i>
+              <h3 class="text-xl font-semibold text-gray-700 mb-2">No School Information Found</h3>
+              <p class="text-gray-500 mb-6">There are no school information records in the system yet.</p>
+              <a href="/admin/school-info/add" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 inline-block">
+                <i class="fas fa-plus mr-2"></i>Add New Information
+              </a>
+            </div>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="bg-gray-100 p-4 border-t-2 border-gray-200 text-center">
+        <p class="text-gray-600 text-sm"><i class="fas fa-chalkboard-teacher mr-1"></i>   Student Management System</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar Script -->
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const openBtn = document.getElementById('openSidebar');
+    const closeBtn = document.getElementById('closeSidebar');
+    const overlay = document.getElementById('overlay');
+
+    openBtn.addEventListener('click', () => {
+      sidebar.classList.remove('-translate-x-full');
+      overlay.classList.remove('hidden');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    });
+  </script>
+</body>
+</html>
