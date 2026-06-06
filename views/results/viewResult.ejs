@@ -538,10 +538,10 @@ class="h-52 rounded-lg shadow-md">
     <!-- School Info (ALL CENTERED) -->
     <div class="text-center">
       <h1 class="text-4xl md:text-5xl font-bold uppercase tracking-wide text-blue-800">
-        <%= schoolProfile ? schoolProfile.name : '' %>
+        <%= schoolProfile ? schoolProfile.name : 'school name' %>
       </h1>
       <p class="text-lg md:text-xl mt-1 font-medium text-gray-700">
-<%= schoolProfile ? schoolProfile.address : '' %>
+<%= schoolProfile ? schoolProfile.address : 'School address' %>
       </p>
       <p class="text-lg md:text-xl mt-1 font-medium text-gray-700">
 Tel: <% if (schoolProfile && schoolProfile.phoneNumbers && schoolProfile.phoneNumbers.length > 0) { %>
@@ -553,7 +553,7 @@ Tel: <% if (schoolProfile && schoolProfile.phoneNumbers && schoolProfile.phoneNu
 <% } %>
       </p>
       <p class="text-lg md:text-xl mt-1 italic font-semibold text-blue-700">
-Motto: <%= schoolProfile ? schoolProfile.motto : '' %>
+Motto: <%= schoolProfile ? schoolProfile.motto : 'school motto' %>
       </p>
     </div>
   </div>

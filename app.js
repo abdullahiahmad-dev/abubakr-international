@@ -76,7 +76,7 @@ app.get("/", (req, res) => {
   if (req.session && req.session.user) {
     res.redirect("/dashboard"); // already logged in
   } else {
-    res.render("index"); // not logged in
+    res.redirect("/login"); // not logged in
   }
 });
 
